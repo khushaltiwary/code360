@@ -16,6 +16,7 @@ import {
   Button,
   LinearProgress,
   Link,
+  Divider,
 } from "@mui/material";
 import { Grid2, Card, CardContent } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
@@ -23,13 +24,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 
 import logo from "../assets/Worldline-Coconut-Horizontal.png"; // Adjust the path to your logo
-
-const features = [
-  { title: "Feature 1", description: "Description of Feature 1" },
-  { title: "Feature 2", description: "Description of Feature 2" },
-  { title: "Feature 3", description: "Description of Feature 3" },
-  { title: "Feature 4", description: "Description of Feature 4" },
-];
 
 const HomeSc = () => {
   const drawerItems = [
@@ -42,6 +36,13 @@ const HomeSc = () => {
   //All states here
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [gitRepoLink, setGitRepoLink] = useState("");
+
+  const features = [
+    { title: "Test Cases", description: "Description of Test Cases" },
+    { title: "Code Review ", description: "Description Code Review" },
+    { title: "Code Enhancements", description: "Description of Code Enhancements" },
+    { title: "Code Documentation", description: "Description of Code Documentation" },
+  ];
 
   //added for timer
   const [progress, setProgress] = useState(0); // State for progress bar
@@ -175,6 +176,7 @@ const HomeSc = () => {
         sx={{
           display: "flex",
           flexDirection: "row",
+          //height:"13vh"
         }}
       >
         <AppBar position="static" sx={{ backgroundColor: "#46beaa" }}>
@@ -219,14 +221,27 @@ const HomeSc = () => {
       </Drawer>
 
       {/* Main Content */}
-      <Container sx={{ marginTop: "8rem", flex: 1 }}>
+      <Container
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "auto",
+        }}
+      >
         <Box
           sx={{
-            width: "100%",
+            //width: "100%",
             display: "flex",
+            flex: "1 0 auto",
             justifyContent: "center",
             flexDirection: "column",
             alignItems: "center",
+            padding: "2rem 1rem",
+            //backgroundColor: "#f9f9f9",
+            //boxShadow: 1,
+            height: "60vh",
+            //marginBottom: "2rem"
           }}
         >
           <Typography variant="h4" align="center" gutterBottom>
@@ -345,25 +360,26 @@ const HomeSc = () => {
             </Box>
           )}
         </Box>
-
+        <Divider sx={{ width: "100%", my: 2 }} />
         {/* Main Feature Section */}
         <Box
           sx={{
             display: "flex",
+            flex: "1 0 auto",
+            height: "70vh",
             flexDirection: "column",
             alignItems: "center",
-            marginTop: "2rem",
-            padding: "1rem",
-            backgroundColor: "#f5f5f5",
-            borderRadius: "8px",
-            boxShadow: 1,
+            justifyContent: "center",
+            overflowY: "auto",
+            marginTop: "-4rem",
+            paddingBottom: "1rem",
           }}
         >
           <Typography
             variant="h4"
             align="center"
             gutterBottom
-            sx={{ fontWeight: "bold" }}
+            sx={{ fontWeight: "bold", marginBottom: "5rem" }}
           >
             Main Features
           </Typography>
@@ -406,6 +422,8 @@ const HomeSc = () => {
           textAlign: "center",
           padding: "1rem 0",
           width: "100%",
+          height: "10vh",
+          paddingTop: "2rem",
         }}
       >
         <Box
