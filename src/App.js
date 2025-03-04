@@ -1,15 +1,23 @@
-import './App.css';
-import { BrowserRouter as Router, Route, Switch , Routes} from 'react-router-dom';
-import LoginSc from './components/LoginSc';
-
+import "./App.css";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Routes,
+} from "react-router-dom";
+import LoginSc from "./components/LoginSc";
+import HomeSc from "./components/HomeSc";
 
 function App() {
   return (
-    <>
-      <h1>Hello</h1>
-      <LoginSc/>
-    </>
+    <Router>
+      <Routes>
+        <Route>
+          <Route path="/" element={<HomeSc />} />
+        </Route>
+      </Routes>
+    </Router>
   );
-};
+}
 
 export default App;
