@@ -27,8 +27,8 @@ import logo from "../assets/Worldline-Coconut-Horizontal.png"; // Adjust the pat
 
 const HomeSc = () => {
   const drawerItems = [
+    { text: "Generate Test Cases ", path: "/testcase" },
     { text: "Generate Docs", path: "/generate-docs" },
-    { text: "Generate Test Cases ", path: "/generate-docs" },
     { text: "Generate Review ", path: "/generate-docs" },
     { text: "Generate Documentation ", path: "/generate-docs" },
   ];
