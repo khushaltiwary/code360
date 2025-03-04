@@ -38,10 +38,20 @@ const HomeSc = () => {
   const [gitRepoLink, setGitRepoLink] = useState("");
 
   const features = [
-    { title: "Test Cases", description: "Description of Test Cases" },
+    {
+      title: "Test Cases",
+      description: "Description of Test Cases",
+      apiEndpoint: "/api/feature1",
+    },
     { title: "Code Review ", description: "Description Code Review" },
-    { title: "Code Enhancements", description: "Description of Code Enhancements" },
-    { title: "Code Documentation", description: "Description of Code Documentation" },
+    {
+      title: "Code Enhancements",
+      description: "Description of Code Enhancements",
+    },
+    {
+      title: "Code Documentation",
+      description: "Description of Code Documentation",
+    },
   ];
 
   //added for timer
@@ -161,6 +171,10 @@ const HomeSc = () => {
   const handlePreview = () => {
     alert("Preview functionality is not yet implemented!"); // Placeholder for preview logic
     //Implement Preview Logic Here
+  };
+
+  const handleFeatureClick = (feature) => {
+    alert(feature.title + " " + "functionality is not yet implemented!");
   };
 
   return (
@@ -360,57 +374,74 @@ const HomeSc = () => {
             </Box>
           )}
         </Box>
-        <Divider sx={{ width: "100%", my: 2 }} />
-        {/* Main Feature Section */}
-        <Box
-          sx={{
-            display: "flex",
-            flex: "1 0 auto",
-            height: "70vh",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            overflowY: "auto",
-            marginTop: "-4rem",
-            paddingBottom: "1rem",
-          }}
-        >
-          <Typography
-            variant="h4"
-            align="center"
-            gutterBottom
-            sx={{ fontWeight: "bold", marginBottom: "5rem" }}
-          >
-            Main Features
-          </Typography>
+        {showDownloadButton && <Divider sx={{ width: "100%", my: 2 }} />}
 
-          <Grid2 container spacing={4}>
-            {features.map((feature, index) => (
-              <Grid2 item xs={12} sm={6} md={3} key={index}>
-                <Card
-                  sx={{
-                    elevation: 3,
-                    transition: "0.3s",
-                    "&:hover": { boxShadow: 6 },
-                  }}
-                >
-                  <CardContent sx={{ padding: "20px" }}>
-                    <Typography
-                      variant="h5"
-                      component="div"
-                      sx={{ marginBottom: "1rem" }}
-                    >
-                      {feature.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {feature.description}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid2>
-            ))}
-          </Grid2>
-        </Box>
+        {/* Conditional Rendering for Main Feature Section */}
+        {showDownloadButton && (
+          <Box
+            sx={{
+              display: "flex",
+              flex: "1 0 auto",
+              height: "70vh",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              overflowY: "auto",
+              marginTop: "-4rem",
+              paddingBottom: "1rem",
+            }}
+          >
+            <Typography
+              variant="h4"
+              align="center"
+              gutterBottom
+              sx={{ fontWeight: "bold", marginBottom: "5rem" }}
+            >
+              Main Features
+            </Typography>
+
+            <Grid2 container spacing={4}>
+              {features.map((feature, index) => (
+                <Grid2 item xs={12} sm={6} md={3} key={index}>
+                  <Card
+                    sx={{
+                      elevation: 3,
+                      transition: "0.3s",
+                      "&:hover": { boxShadow: 6 },
+                    }}
+                  >
+                    <CardContent sx={{ padding: "20px" }}>
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        sx={{ marginBottom: "1rem" }}
+                      >
+                        {feature.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ marginBottom: "1rem" }}
+                      >
+                        {feature.description}
+                      </Typography>
+                      <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="medium"
+                          onClick={() => handleFeatureClick(feature)}
+                        >
+                          {feature.title}
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid2>
+              ))}
+            </Grid2>
+          </Box>
+        )}
       </Container>
 
       {/* Footer */}
