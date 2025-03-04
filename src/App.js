@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginSc from "./components/LoginSc";
 import HomeSc from "./components/HomeSc";
 import SplashSc from "./components/SplashSc";
-import TestCase from "./components/TestCase";
+import TestCaseSc from "./components/TestCaseSc";
+import DocSc from "./components/DocSc";
 
 function App() {
 
@@ -16,7 +17,8 @@ function App() {
         <Route path="/" element={<SplashSc />} />
         <Route path="/login" element={<LoginSc />} />
         <Route path="/home" element={<HomeSc />} />
-        <Route path="/testcase" element={<TestCase />} />
+        <Route path="/testcase" element={<TestCaseSc />} />
+        <Route path="/doc" element={<DocSc />} />
       </Routes>
     </Router>
   );

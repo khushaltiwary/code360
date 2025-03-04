@@ -1,7 +1,7 @@
 import MainContent from "./MainContent";
 import { Container } from "@mui/material";
 
-const TestCase= () => { return(
+const TestCaseSc= () => { return(
     <Container sx={{ flex: 1 }}>
     <MainContent
       title="Test Case Generation"
@@ -11,4 +11,4 @@ const TestCase= () => { return(
     </Container>
 
 )}
-export default TestCase;
+export default TestCaseSc;
