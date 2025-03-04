@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 
-const SplashSc = ({ onFinish }) => {
+const SplashSc = () => {
 
     const navigate = useNavigate(); // Initialize useNavigate
 
@@ -17,33 +17,31 @@ const SplashSc = ({ onFinish }) => {
 
     useEffect(() => {
         let interval;
-        const timer = setTimeout(() => {
-            if (loading && progress === 100) { // Only navigate if loading is true
-                clearInterval(interval);
-                navigate('/login'); // Navigate to LoginSc page
-            }
-        }, 40000); // Keep the splash up for 40 seconds
 
         if (loading) {
+            // Progress updating function
             interval = setInterval(() => {
                 setProgress((oldProgress) => {
                     if (oldProgress >= 100) {
                         clearInterval(interval);
+                        setTimeout(() => {
+                            navigate('/login'); // Navigate to LoginSc after completing progress
+                        }, 500); // Add a slight delay for UX
                         return 100; // Ensure it reaches 100%
                     }
                     return Math.min(oldProgress + 5, 100); // Increment progress
                 });
-            }, 150); // Update every 150 ms to fill the bar
+            }, 150);
         }
 
         return () => {
-            clearTimeout(timer);
             clearInterval(interval);
         };
-    }, [loading, progress, navigate]);
+    }, [loading, navigate]);
+
 
     const handleStart = () => {
-        setLoading(true); // Start loading when button is clicked
+        setLoading(true); // Start loading when the button is clicked
         setProgress(0); // Reset progress to 0
     };
 
