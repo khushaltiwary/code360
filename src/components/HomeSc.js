@@ -29,8 +29,8 @@ const HomeSc = () => {
   const drawerItems = [
     { text: "Generate Test Cases ", path: "/testcase" },
     { text: "Generate Docs", path: "/doc" },
-    { text: "Generate Review ", path: "/generate-docs" },
-    { text: "Generate Documentation ", path: "/generate-docs" },
+    { text: "Generate Review ", path: "/review" },
+    { text: "Generate Enhancements ", path: "/enhance" },
   ];
 
   //All states here
