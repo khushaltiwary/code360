@@ -453,7 +453,7 @@ const HomeSc = () => {
           textAlign: "center",
           padding: "1rem 0",
           width: "100%",
-          height: "10vh",
+          //height: "10vh",
           paddingTop: "2rem",
         }}
       >
