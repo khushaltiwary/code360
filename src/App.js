@@ -1,5 +1,4 @@
 import "./App.css";
-import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginSc from "./components/LoginSc";
 import HomeSc from "./components/HomeSc";

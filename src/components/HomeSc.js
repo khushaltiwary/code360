@@ -1,6 +1,4 @@
 import React from "react";
-//added for timer
-
 import {
   AppBar,
   Toolbar,
@@ -162,17 +160,6 @@ const HomeSc = () => {
       });
   };
 
-  const handleDownload = () => {
-    // Implement  download logic here
-    alert("Download initiated!");
-    // trigger file downloads  with `URL.createObjectURL` or other means)
-  };
-
-  const handlePreview = () => {
-    alert("Preview functionality is not yet implemented!"); // Placeholder for preview logic
-    //Implement Preview Logic Here
-  };
-
   const handleFeatureClick = (feature) => {
     alert(feature.title + " " + "functionality is not yet implemented!");
   };
@@ -296,9 +283,6 @@ const HomeSc = () => {
               width: "40%",
             }}
           />
-
-          {/* Conditional rendering for Copy button or Download button */}
-          {!showDownloadButton ? ( // Check if Download button should be displayed
             <Button
               variant="contained"
               onClick={handleCopyClick}
@@ -308,37 +292,11 @@ const HomeSc = () => {
                 color: "#FFF",
                 "&:hover": { backgroundColor: "#3fa695" },
               }}
-              disabled={!isValidGitHubLink} // disable button if link is invalid
+              disabled={isTextFieldDisabled} // disable button 
             >
               Copy Code to Google Storage Bucket
             </Button>
-          ) : (
-            <Box sx={{ display: "flex", marginTop: "1rem", gap: "1rem" }}>
-              {" "}
-              <Button
-                variant="contained"
-                onClick={handleDownload}
-                sx={{
-                  backgroundColor: "#46beaa",
-                  color: "#FFF",
-                  "&:hover": { backgroundColor: "#3fa695" },
-                }}
-              >
-                Download
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handlePreview}
-                sx={{
-                  backgroundColor: "#46beaa",
-                  color: "#FFF",
-                  "&:hover": { backgroundColor: "#3fa695" },
-                }}
-              >
-                Preview
-              </Button>
-            </Box>
-          )}
+          
 
           {showProgress && (
             <Box
@@ -428,14 +386,14 @@ const HomeSc = () => {
                     component="div"
                     sx={{ marginBottom: "1rem" }}
                   >
-                    Download All Reports
+                    All Reports
                   </Typography>
                   <Typography
                     variant="body2"
                     color="text.secondary"
                     sx={{ marginBottom: "1rem" }}
                   >
-                    Download a compiled report of all features.
+                    A compiled report of all features.
                   </Typography>
                   <Button
                     variant="contained"
@@ -447,12 +405,12 @@ const HomeSc = () => {
                     }}
                     onClick={() =>
                       handleFeatureClick({
-                        title: "Download All Reports",
+                        title: "All Reports",
                         apiEndpoint: "/api/download-reports",
                       })
                     }
                   >
-                    Download All Reports
+                    All Reports
                   </Button>
                 </CardContent>
               </Card>
