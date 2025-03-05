@@ -258,7 +258,12 @@ const HomeSc = () => {
             //marginBottom: "2rem"
           }}
         >
-          <Typography variant="h4" align="center" gutterBottom>
+          <Typography
+            variant="h4"
+            align="center"
+            gutterBottom
+            sx={{ fontWeight: "bold" }}
+          >
             Home - Code 360 Analytics
           </Typography>
           <Typography paragraph align="center">
@@ -382,12 +387,12 @@ const HomeSc = () => {
             sx={{
               display: "flex",
               flex: "1 0 auto",
-              height: "70vh",
+              height: "100vh",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
               overflowY: "auto",
-              marginTop: "-4rem",
+              marginTop: "-8rem",
               paddingBottom: "1rem",
             }}
           >
@@ -395,10 +400,63 @@ const HomeSc = () => {
               variant="h4"
               align="center"
               gutterBottom
-              sx={{ fontWeight: "bold", marginBottom: "5rem" }}
+              //sx={{ fontWeight: "bold" }}
             >
               Main Features
             </Typography>
+
+            {/* "Download All Reports" card, separate from the grid */}
+            <Box sx={{ display: "flex", justifyContent: "center", marginY: 3 }}>
+              <Card
+                sx={{
+                  elevation: 3,
+                  transition: "0.3s",
+                  "&:hover": { boxShadow: 6 },
+                }}
+              >
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    //height: 200, // Ensures adequate spacing for centering
+                  }}
+                >
+                  <Typography
+                    variant="h5"
+                    component="div"
+                    sx={{ marginBottom: "1rem" }}
+                  >
+                    Download All Reports
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ marginBottom: "1rem" }}
+                  >
+                    Download a compiled report of all features.
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      backgroundColor: "#46beaa",
+                      color: "#FFF",
+                      "&:hover": { backgroundColor: "#3fa695" },
+                    }}
+                    onClick={() =>
+                      handleFeatureClick({
+                        title: "Download All Reports",
+                        apiEndpoint: "/api/download-reports",
+                      })
+                    }
+                  >
+                    Download All Reports
+                  </Button>
+                </CardContent>
+              </Card>
+            </Box>
 
             <Grid2 container spacing={4}>
               {features.map((feature, index) => (
@@ -429,7 +487,11 @@ const HomeSc = () => {
                         <Button
                           variant="contained"
                           color="primary"
-                          size="medium"
+                          sx={{
+                            backgroundColor: "#46beaa",
+                            color: "#FFF",
+                            "&:hover": { backgroundColor: "#3fa695" },
+                          }}
                           onClick={() => handleFeatureClick(feature)}
                         >
                           {feature.title}
