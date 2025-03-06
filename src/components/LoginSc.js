@@ -9,9 +9,12 @@ import {
     CardActions,
 } from '@mui/material';
 
-
+import { useNavigate } from 'react-router-dom';
 
 const LoginSc = () => {
+
+     const navigate = useNavigate(); // Initialize useNavigate
+
     return (
         <Box sx={styles.container}>
             <Card elevation={5} sx={styles.card}>
@@ -41,7 +44,10 @@ const LoginSc = () => {
                     </Box>
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'center' }}>
-                    <Button variant="contained" sx={styles.button}>
+                    <Button variant="contained" 
+                    sx={styles.button}
+                    onClick={()=> navigate('/home')}
+                    >
                         Login
                     </Button>
                 </CardActions>
