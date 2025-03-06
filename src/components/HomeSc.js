@@ -17,9 +17,10 @@ import {
   Divider,
 } from "@mui/material";
 import { Grid2, Card, CardContent } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink , useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
+import DownloadSc from './DownloadSc'; // Import DownloadSc component
 
 import logo from "../assets/Worldline-Coconut-Horizontal.png"; // Adjust the path to your logo
 
@@ -41,24 +42,29 @@ const HomeSc = () => {
       description: "Description of Test Cases",
       apiEndpoint: "/api/feature1",
     },
-    { title: "Code Review ", description: "Description Code Review" },
+    { title: "Code Review ", description: "Description Code Review", apiEndpoint: "/api/feature2", },
     {
       title: "Code Enhancements",
       description: "Description of Code Enhancements",
+      apiEndpoint: "/api/feature3",
     },
     {
       title: "Code Documentation",
       description: "Description of Code Documentation",
+      apiEndpoint: "/api/feature4",
     },
   ];
 
+  const navigate = useNavigate();
+
   //added for timer
   const [progress, setProgress] = useState(0); // State for progress bar
-  const [showProgress, setShowProgress] = useState(false); // State to control progress bar visibility
+
+  const [HideItems, setHideItems] = useState(false); // State to Hide items after progress bar is done i.e manage visibility 
   const [randomFact, setRandomFact] = useState(""); // State for displaying a random fact
 
-  // State for Download button visibility
-  const [showDownloadButton, setShowDownloadButton] = useState(false);
+  
+  const [ShowItems, setShowItems] = useState(false);// State for Showing Items after Progress bar visibility
   // State to disalbe Input Text field
   const [isTextFieldDisabled, setIsTextFieldDisabled] = useState(false);
 
@@ -115,11 +121,11 @@ const HomeSc = () => {
         console.log("Copied link:", gitRepoLink); // Log the copied link
 
         //added for timer
-        setShowProgress(true);
+        setHideItems(true);
         setProgress(0);
 
-        // Hide download button initially
-        setShowDownloadButton(false);
+        // Hide Items initialy 
+        setShowItems(false);
 
         // Text field is enabled initially
         setIsTextFieldDisabled(false);
@@ -130,8 +136,8 @@ const HomeSc = () => {
           setProgress((oldProgress) => {
             if (oldProgress >= 100) {
               clearInterval(progressInterval); // Stop the timer when progress is 100
-              setShowProgress(false); // Hide the progress bar after complection
-              setShowDownloadButton(true); //Show download button when progress is complete
+              setHideItems(false); // Hide the progress bar after complection
+              setShowItems(true); //Show Items when progress is completed
               setIsTextFieldDisabled(true); // Disable the text field
               return 100;
             }
@@ -160,9 +166,18 @@ const HomeSc = () => {
       });
   };
 
+  // State to manage which screen should be shown
+  const [showDownloadScreen, setShowDownloadScreen] = useState(false);
+  const [downloadData, setDownloadData] = useState({ title: '', description: '', progress: 0 });
+
   const handleFeatureClick = (feature) => {
-    alert(feature.title + " " + "functionality is not yet implemented!");
+   // Navigate to the DownloadSc page, passing feature data as state
+   navigate('/download', { state: { title: feature.title, description: feature.description, apiEndpoint: feature.apiEndpoint }});
+  }
+  const handleCloseDownloadScreen = () => {
+    setShowDownloadScreen(false);
   };
+
 
   return (
     <Box
@@ -298,7 +313,7 @@ const HomeSc = () => {
             </Button>
           
 
-          {showProgress && (
+          {HideItems && (
             <Box
               sx={{
                 display: "flex",
@@ -337,10 +352,10 @@ const HomeSc = () => {
             </Box>
           )}
         </Box>
-        {showDownloadButton && <Divider sx={{ width: "100%", my: 2 }} />}
+        {ShowItems && <Divider sx={{ width: "100%", my: 2 }} />}
 
         {/* Conditional Rendering for Main Feature Section */}
-        {showDownloadButton && (
+        {ShowItems && (
           <Box
             sx={{
               display: "flex",
@@ -358,7 +373,6 @@ const HomeSc = () => {
               variant="h4"
               align="center"
               gutterBottom
-              //sx={{ fontWeight: "bold" }}
             >
               Main Features
             </Typography>
@@ -378,7 +392,6 @@ const HomeSc = () => {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    //height: 200, // Ensures adequate spacing for centering
                   }}
                 >
                   <Typography
@@ -406,6 +419,7 @@ const HomeSc = () => {
                     onClick={() =>
                       handleFeatureClick({
                         title: "All Reports",
+                        description:"All 360 Analytics Reports ",
                         apiEndpoint: "/api/download-reports",
                       })
                     }
@@ -462,6 +476,16 @@ const HomeSc = () => {
             </Grid2>
           </Box>
         )}
+
+        {/* Conditionally render DownloadSc Component */}
+        {showDownloadScreen && (
+          <DownloadSc
+            title={downloadData.title}
+            description={downloadData.description}
+            progress={downloadData.progress}
+          />
+        )}
+
       </Container>
 
       {/* Footer */}
