@@ -92,7 +92,6 @@ const HomeSc = () => {
     navigator.clipboard
       .writeText(gitRepoLink) // Copy the URL to clipboard
       .then(() => {
-       
         console.log("Copied link:", gitRepoLink);
 
         // Text field is enabled initially
@@ -101,7 +100,6 @@ const HomeSc = () => {
         // States For Progress bar
         setHideItems(true);
 
-        
         setProgress(0);
 
         // Do not show Items(any thing that should be displayed after complition of Progress bar) initialy.
@@ -118,7 +116,7 @@ const HomeSc = () => {
               alert("Link copied successfully to Google Storage bucket!");
               return 100;
             }
-            
+
             console.log("Progress updated to:", oldProgress);
 
             return oldProgress + 1; // Increment for a longer duration
@@ -354,8 +352,7 @@ const HomeSc = () => {
               </Box>
             )}
           </Box>
-          )}
-
+        )}
 
         {/* Conditional Rendering for Main Feature Section */}
         {ShowItems && (
