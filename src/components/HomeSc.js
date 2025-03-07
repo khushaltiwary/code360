@@ -17,14 +17,15 @@ import {
   Divider,
 } from "@mui/material";
 import { Grid2, Card, CardContent } from "@mui/material";
-import { Link as RouterLink , useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
-import DownloadSc from './DownloadSc'; // Import DownloadSc component
 
 import logo from "../assets/Worldline-Coconut-Horizontal.png"; // Adjust the path to your logo
 
 const HomeSc = () => {
+  // Drawer Logic and States related to Drawer
+
   const drawerItems = [
     { text: "Generate Test Cases ", path: "/testcase" },
     { text: "Generate Docs", path: "/doc" },
@@ -32,41 +33,7 @@ const HomeSc = () => {
     { text: "Generate Enhancements ", path: "/enhance" },
   ];
 
-  //All states here
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [gitRepoLink, setGitRepoLink] = useState("");
-
-  const features = [
-    {
-      title: "Test Cases",
-      description: "Description of Test Cases",
-      apiEndpoint: "/api/feature1",
-    },
-    { title: "Code Review ", description: "Description Code Review", apiEndpoint: "/api/feature2", },
-    {
-      title: "Code Enhancements",
-      description: "Description of Code Enhancements",
-      apiEndpoint: "/api/feature3",
-    },
-    {
-      title: "Code Documentation",
-      description: "Description of Code Documentation",
-      apiEndpoint: "/api/feature4",
-    },
-  ];
-
-  const navigate = useNavigate();
-
-  //added for timer
-  const [progress, setProgress] = useState(0); // State for progress bar
-
-  const [HideItems, setHideItems] = useState(false); // State to Hide items after progress bar is done i.e manage visibility 
-  const [randomFact, setRandomFact] = useState(""); // State for displaying a random fact
-
-  
-  const [ShowItems, setShowItems] = useState(false);// State for Showing Items after Progress bar visibility
-  // State to disalbe Input Text field
-  const [isTextFieldDisabled, setIsTextFieldDisabled] = useState(false);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -78,21 +45,29 @@ const HomeSc = () => {
     setDrawerOpen(open);
   };
 
-  //these lines chnaged for validation
+  //Git Link Logic and States Related to Validation of Git Link
+
+  const [gitRepoLink, setGitRepoLink] = useState("");
   const [isValidGitHubLink, setIsValidGitHubLink] = useState(false); // State to track if the GitHub link is valid
+
   const handleLinkChange = (event) => {
     const url = event.target.value;
     setGitRepoLink(url);
-
-    //these lines chnaged for validation
-    // Regular expression to validate if the URL is a GitHub link
     const githubLinkPattern =
       /^(https?:\/\/)?(www\.)?github\.com\/[A-Za-z0-9._%+-]+\/[A-Za-z0-9._%+-]+\/?$/;
     //check if URL is empty or not matching GitHub pattern
     setIsValidGitHubLink(url.trim() !== "" && githubLinkPattern.test(url));
   };
 
-  //added for timer
+  //States to set Workflow after button is clicked and Progress bar is completed.
+
+  const [progress, setProgress] = useState(0); // State for progress bar
+  const [HideItems, setHideItems] = useState(false); // State to Hide items after progress bar is done i.e manage visibility
+  const [randomFact, setRandomFact] = useState(""); // State for displaying a random fact
+  const [ShowItems, setShowItems] = useState(false); // State for Showing Items after Progress bar visibility
+  const [isTextFieldDisabled, setIsTextFieldDisabled] = useState(false); // State to disalbe Input Text field
+
+  //Hardcoded Random Facts to show along with Progress Bar.
   const randomFacts = [
     "Solution utilizes GitLab CI/CD as a DevOps platform to streamline software development processes.",
     "The integration involves the GEN AI 'GEMINI FLASH' model for automated test generation.",
@@ -108,76 +83,105 @@ const HomeSc = () => {
     "Coding standards are maintained, reducing technical debt and improving maintainability.",
     "The process can easily scale with an expanding codebase and development team.",
     "Automation supports consistent quality and efficiency across development activities.",
-  ]; // List of tech-related random facts
+  ];
+
+  //Copy Button Logic and Workflow after Button is Clicked
 
   const handleCopyClick = () => {
-    //this line is added for validation
     if (!isValidGitHubLink) return; // Prevent copying if the link is invalid
-
     navigator.clipboard
       .writeText(gitRepoLink) // Copy the URL to clipboard
       .then(() => {
-        alert("Link copied successfully to Google Storage bucket!"); // Alert on success
-        console.log("Copied link:", gitRepoLink); // Log the copied link
-
-        //added for timer
-        setHideItems(true);
-        setProgress(0);
-
-        // Hide Items initialy 
-        setShowItems(false);
+       
+        console.log("Copied link:", gitRepoLink);
 
         // Text field is enabled initially
         setIsTextFieldDisabled(false);
 
-        //added for timer
+        // States For Progress bar
+        setHideItems(true);
+
+        
+        setProgress(0);
+
+        // Do not show Items(any thing that should be displayed after complition of Progress bar) initialy.
+        setShowItems(false);
+
+        //Progress Bar Logic -
         const progressInterval = setInterval(() => {
-          // Interval to update progress
           setProgress((oldProgress) => {
             if (oldProgress >= 100) {
               clearInterval(progressInterval); // Stop the timer when progress is 100
               setHideItems(false); // Hide the progress bar after complection
               setShowItems(true); //Show Items when progress is completed
               setIsTextFieldDisabled(true); // Disable the text field
+              alert("Link copied successfully to Google Storage bucket!");
               return 100;
             }
+            
             console.log("Progress updated to:", oldProgress);
 
-            return oldProgress + 1; // Increment progress by a smaller amount for a longer duration
+            return oldProgress + 1; // Increment for a longer duration
           });
-        }, 100); // Update progress every 0.5 second for smoother transitions
+        }, 100);
 
-        // added for the facts to show
+        // Facts Showing Logic -
+
         const factInterval = setInterval(() => {
           // Separate interval for random facts
           const randomFactIndex = Math.floor(
             Math.random() * randomFacts.length
           );
-          setRandomFact(randomFacts[randomFactIndex]); // Set a new random fact
+          setRandomFact(randomFacts[randomFactIndex]);
         }, 2000); // Display a new random fact every 3 seconds
 
         setTimeout(() => {
           clearInterval(factInterval); // Stop updating facts when progress is finished
-        }, 25000); // Stop the fact updates with 25 seconds since increase is slow
+        }, 25000);
       })
 
       .catch((err) => {
-        console.error("Failed to copy: ", err); // If there's an error
+        console.error("Failed to copy: ", err);
       });
   };
 
-  // State to manage which screen should be shown
-  const [showDownloadScreen, setShowDownloadScreen] = useState(false);
-  const [downloadData, setDownloadData] = useState({ title: '', description: '', progress: 0 });
+  //Main feature section Features -
+  const features = [
+    {
+      title: "Test Cases",
+      description: "Description of Test Cases",
+      apiEndpoint: "/api/feature1",
+    },
+    {
+      title: "Code Review ",
+      description: "Description Code Review",
+      apiEndpoint: "/api/feature2",
+    },
+    {
+      title: "Code Enhancements",
+      description: "Description of Code Enhancements",
+      apiEndpoint: "/api/feature3",
+    },
+    {
+      title: "Code Documentation",
+      description: "Description of Code Documentation",
+      apiEndpoint: "/api/feature4",
+    },
+  ];
+
+  //Navigate function to navigate to DownloadSc when button on feature card is clicked.
+  const navigate = useNavigate();
 
   const handleFeatureClick = (feature) => {
-   // Navigate to the DownloadSc page, passing feature data as state
-   navigate('/download', { state: { title: feature.title, description: feature.description, apiEndpoint: feature.apiEndpoint }});
-  }
-  const handleCloseDownloadScreen = () => {
-    setShowDownloadScreen(false);
+    // Navigate to the DownloadSc page, passing feature data as state
+    navigate("/download", {
+      state: {
+        title: feature.title,
+        description: feature.description,
+        apiEndpoint: feature.apiEndpoint,
+      },
+    });
   };
-
 
   return (
     <Box
@@ -245,59 +249,54 @@ const HomeSc = () => {
           overflowY: "auto",
         }}
       >
-        <Box
-          sx={{
-            //width: "100%",
-            display: "flex",
-            flex: "1 0 auto",
-            justifyContent: "center",
-            flexDirection: "column",
-            alignItems: "center",
-            padding: "2rem 1rem",
-            //backgroundColor: "#f9f9f9",
-            //boxShadow: 1,
-            height: "60vh",
-            //marginBottom: "2rem"
-          }}
-        >
-          <Typography
-            variant="h4"
-            align="center"
-            gutterBottom
-            sx={{ fontWeight: "bold" }}
-          >
-            Home - Code 360 Analytics
-          </Typography>
-          <Typography paragraph align="center">
-            Your one step solution to all your boring business needs.
-          </Typography>
-
-          {/* Git Repository Link Input */}
-
-          <TextField
-            //these lines are added for validation
-            error={!isValidGitHubLink && gitRepoLink.trim() !== ""} // Display an error state if the link is invalid
-            helperText={
-              !isValidGitHubLink && gitRepoLink.trim() !== ""
-                ? "Please enter a valid GitHub repository link."
-                : ""
-            }
-            variant="outlined"
-            fullWidth
-            //label="Paste Your Repo Link Here - Gitlab/ Github link"
-            placeholder="Paste Your Repo Link Here - Gitlab/ Github link"
-            value={gitRepoLink}
-            onChange={handleLinkChange}
-            disabled={isTextFieldDisabled} // Disable if true
+        {!ShowItems && (
+          <Box
             sx={{
-              "& .MuiInputBase-input": {
-                textAlign: "center",
-              },
-              marginTop: "1rem",
-              marginBottom: "1rem",
-              width: "40%",
+              display: "flex",
+              flex: "1 0 auto",
+              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "center",
+              padding: "2rem 1rem",
+              height: "60vh",
             }}
-          />
+          >
+            <Typography
+              variant="h4"
+              align="center"
+              gutterBottom
+              sx={{ fontWeight: "bold" }}
+            >
+              360° Code Analytics
+            </Typography>
+            <Typography paragraph align="center">
+              Your one step solution to all your boring business needs.
+            </Typography>
+
+            {/* Git Repository Link Input */}
+
+            <TextField
+              error={!isValidGitHubLink && gitRepoLink.trim() !== ""} // Error state if the link is invalid
+              helperText={
+                !isValidGitHubLink && gitRepoLink.trim() !== ""
+                  ? "Please enter a valid GitHub repository link."
+                  : ""
+              }
+              variant="outlined"
+              fullWidth
+              placeholder="Paste Your Repo Link Here - Gitlab/ Github link"
+              value={gitRepoLink}
+              onChange={handleLinkChange}
+              disabled={isTextFieldDisabled} // Disable if true
+              sx={{
+                "& .MuiInputBase-input": {
+                  textAlign: "center",
+                },
+                marginTop: "1rem",
+                marginBottom: "1rem",
+                width: "40%",
+              }}
+            />
             <Button
               variant="contained"
               onClick={handleCopyClick}
@@ -307,52 +306,56 @@ const HomeSc = () => {
                 color: "#FFF",
                 "&:hover": { backgroundColor: "#3fa695" },
               }}
-              disabled={isTextFieldDisabled} // disable button 
+              disabled={isTextFieldDisabled} // disable button
             >
               Copy Code to Google Storage Bucket
             </Button>
-          
 
-          {HideItems && (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                marginTop: "1rem",
-                width: "100%",
-              }}
-            >
+            {HideItems && (
               <Box
-                sx={{ display: "flex", alignItems: "center", width: "100%" }}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  marginTop: "1rem",
+                  width: "100%",
+                }}
               >
-                <LinearProgress
-                  variant="determinate"
-                  value={progress}
-                  sx={{ flexGrow: 1 }}
-                />
+                <Box
+                  sx={{ display: "flex", alignItems: "center", width: "100%" }}
+                >
+                  <LinearProgress
+                    variant="determinate"
+                    value={progress}
+                    sx={{ flexGrow: 1 }}
+                  />
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      marginLeft: "10px",
+                      color: "black",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {`${Math.round(progress)}%`}{" "}
+                    {/* current progress percentage */}
+                  </Typography>
+                </Box>
                 <Typography
                   variant="body2"
                   sx={{
-                    marginLeft: "10px",
-                    color: "black",
-                    whiteSpace: "nowrap",
+                    marginTop: "0.5rem",
+                    textAlign: "center",
+                    width: "100%",
                   }}
                 >
-                  {`${Math.round(progress)}%`}{" "}
-                  {/* current progress percentage */}
+                  {randomFact} {/* random fact below the progress bar */}
                 </Typography>
               </Box>
-              <Typography
-                variant="body2"
-                sx={{ marginTop: "0.5rem", textAlign: "center", width: "100%" }}
-              >
-                {randomFact} {/* random fact below the progress bar */}
-              </Typography>
-            </Box>
+            )}
+          </Box>
           )}
-        </Box>
-        {ShowItems && <Divider sx={{ width: "100%", my: 2 }} />}
+
 
         {/* Conditional Rendering for Main Feature Section */}
         {ShowItems && (
@@ -360,20 +363,14 @@ const HomeSc = () => {
             sx={{
               display: "flex",
               flex: "1 0 auto",
-              height: "100vh",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
               overflowY: "auto",
-              marginTop: "-8rem",
               paddingBottom: "1rem",
             }}
           >
-            <Typography
-              variant="h4"
-              align="center"
-              gutterBottom
-            >
+            <Typography variant="h4" align="center" gutterBottom>
               Main Features
             </Typography>
 
@@ -419,7 +416,7 @@ const HomeSc = () => {
                     onClick={() =>
                       handleFeatureClick({
                         title: "All Reports",
-                        description:"All 360 Analytics Reports ",
+                        description: "All 360 Analytics Reports ",
                         apiEndpoint: "/api/download-reports",
                       })
                     }
@@ -476,16 +473,6 @@ const HomeSc = () => {
             </Grid2>
           </Box>
         )}
-
-        {/* Conditionally render DownloadSc Component */}
-        {showDownloadScreen && (
-          <DownloadSc
-            title={downloadData.title}
-            description={downloadData.description}
-            progress={downloadData.progress}
-          />
-        )}
-
       </Container>
 
       {/* Footer */}
@@ -511,7 +498,6 @@ const HomeSc = () => {
               ml: 2,
             },
           }}
-          //onClick={preventDefault}
         >
           <Link href="#" underline="hover" sx={{ color: "black" }}>
             {"Privacy"}
@@ -530,5 +516,4 @@ const HomeSc = () => {
     </Box>
   );
 };
-
 export default HomeSc;

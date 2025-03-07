@@ -20,8 +20,9 @@ const LoginSc = () => {
             <Card elevation={5} sx={styles.card}>
                 <CardContent>
                     <Typography variant="h5" component="div" sx={styles.title}>
-                        Code 360 Analysis -- Login
+                      360° Code Analytics
                     </Typography>
+
                     <Typography variant="body2" sx={styles.paragraph}>
                         Please enter your credentials to continue.
                     </Typography>
