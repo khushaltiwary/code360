@@ -27,10 +27,11 @@ const HomeSc = () => {
   // Drawer Logic and States related to Drawer
 
   const drawerItems = [
-    { text: "Generate Test Cases ", path: "/testcase" },
-    { text: "Generate Docs", path: "/doc" },
-    { text: "Generate Review ", path: "/review" },
-    { text: "Generate Enhancements ", path: "/enhance" },
+    // { text: "Generate Test Cases ", path: "/testcase" },
+    // { text: "Generate Docs", path: "/doc" },
+    // { text: "Generate Review ", path: "/review" },
+    // { text: "Generate Enhancements ", path: "/enhance" },
+    { text: "Upcoming Features ✨ ", path: "/upcomingFeatures" },
   ];
 
   const [drawerOpen, setDrawerOpen] = useState(false);
