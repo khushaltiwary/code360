@@ -152,11 +152,23 @@ const DownloadSc = () => {
             <Typography variant="body1">
               {JSON.stringify(previewData, null, 2)}
             </Typography>
-            
           ) : (
             <CircularProgress />
           )}
         </DialogContent>
+        <Box sx={{ padding: '1rem', textAlign: 'center' }}>
+          <Button
+            variant="contained"
+            onClick={handleDownloadClick}
+            sx={{
+              backgroundColor: "#46beaa",
+              color: "#FFF",
+              "&:hover": { backgroundColor: "#3fa695" },
+            }}
+          >
+            Download
+          </Button>
+        </Box>
       </Dialog>
     </Box> 
   );
