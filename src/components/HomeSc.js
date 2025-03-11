@@ -32,6 +32,7 @@ const HomeSc = () => {
 
     const [gitRepoLink, setGitRepoLink] = useState("");
     const [isValidGitHubLink, setIsValidGitHubLink] = useState(false); // State to track if the GitHub link is valid
+    const [personalAccessToken, setPersonalAccessToken] = useState(""); // State for PAT
 
     const handleLinkChange = (event) => {
         const url = event.target.value;
@@ -170,7 +171,7 @@ const HomeSc = () => {
             sx={{
                 display: "flex",
                 flexDirection: "column",
-                minHeight: "100vh",
+                minHeight: "77vh",
             }}
         >
 
@@ -182,6 +183,7 @@ const HomeSc = () => {
                     display: "flex",
                     flexDirection: "column",
                     overflowY: "auto",
+                    
                 }}
             >
                 {!ShowItems && (
@@ -193,7 +195,6 @@ const HomeSc = () => {
                             flexDirection: "column",
                             alignItems: "center",
                             padding: "2rem 1rem",
-                            height: "60vh",
                         }}
                     >
                         <Typography
@@ -232,6 +233,22 @@ const HomeSc = () => {
                                 width: "40%",
                             }}
                         />
+                        {/* Personal Access Token Input */}
+                        <TextField
+                          placeholder="GitHub Access Token"
+                          variant="outlined"
+                          fullWidth
+                          //value={personalAccessToken}
+                          //onChange={(e) => setPersonalAccessToken(e.target.value)}
+                          sx={{
+                            "& .MuiInputBase-input": {
+                              textAlign: "center",
+                            },
+                            marginBottom: "1rem",
+                            width: "40%",
+                          }}
+                        />
+
                         <Button
                             variant="contained"
                             onClick={handleCopyClick}

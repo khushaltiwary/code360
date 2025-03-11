@@ -47,7 +47,7 @@ const WhiteboardSc = () => {
                 </List>
             </Box>
         </Drawer>
-        <Box sx={styles.contentArea}>
+        <Box >
             {currentComponent} {/* Render the current component here */}
         </Box>
         <Footer />
