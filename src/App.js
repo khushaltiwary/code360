@@ -5,6 +5,7 @@ import HomeSc from "./components/HomeSc";
 import SplashSc from "./components/SplashSc";
 import DownloadSc from "./components/DownloadSc";
 import UpcomingFeatures from "./components/UpcomingFeatures";
+import WhiteboardSc from "./components/WhiteboardSc";
 
 
 function App() {
@@ -13,7 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<SplashSc />} />
         <Route path="/login" element={<LoginSc />} />
-        <Route path="/home" element={<HomeSc />} />
+        <Route path="/home" element={<WhiteboardSc />} />
         <Route path="/download" element={<DownloadSc />} />
         <Route path="/upcomingFeatures" element={<UpcomingFeatures />} />
       </Routes>
