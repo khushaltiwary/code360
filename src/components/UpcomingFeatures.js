@@ -61,11 +61,18 @@ const UpcomingFeatures = () => {
 
 const styles = {
     container: {
-        padding: '20px',
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        overflowY: "auto",
+        padding: "2rem 3rem",
         backgroundColor: '#f9f9f9',
         borderRadius: '8px',
         boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
         textAlign: 'center',
+        height:"67vh",
     },
     title: {
         fontWeight: 'bold',
