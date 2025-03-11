@@ -47,7 +47,7 @@ const WhiteboardSc = () => {
                 </List>
             </Box>
         </Drawer>
-        <Box >
+        <Box >{/* Only add css to this box when you want to apply it to all components in HomeS*/}
             {currentComponent} {/* Render the current component here */}
         </Box>
         <Footer />
