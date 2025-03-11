@@ -26,11 +26,7 @@ const HomeSc = () => {
     //Navigate function to navigate to DownloadSc when button on feature card is clicked.
     const navigate = useNavigate();
 
-    const drawerItems = [
-        { text: "Upcoming Features ✨ ", path: "/upcomingFeatures" },
-    ];
-
-    const [drawerOpen, setDrawerOpen] = useState(false);
+   
 
     //Git Link Logic and States Related to Validation of Git Link
 
@@ -167,18 +163,6 @@ const HomeSc = () => {
             },
         });
     };
-
-
-    const toggleDrawer = (open) => (event) => {
-        if (
-          event.type === "keydown" &&
-          (event.key === "Tab" || event.key === "Shift")
-        ) {
-          return;
-        }
-        setDrawerOpen(open);
-      };
-
 
 
     return (

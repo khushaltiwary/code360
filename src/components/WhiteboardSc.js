@@ -1,24 +1,24 @@
 import React, { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Drawer, List, ListItem, ListItemText } from "@mui/material";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import HomeSc from "./HomeSc";
+import UpcomingFeatures from './UpcomingFeatures';
 
 const WhiteboardSc = () => {
     const [currentComponent, setCurrentComponent] = useState(<HomeSc />);
     const [drawerOpen, setDrawerOpen] = useState(false);
 
+    const drawerItems = [
+        { text: "Upcoming Features ✨ ", path: "/upcomingFeatures" }, // Assuming UpcomingFeatures is imported
+        // More items can be added here
+    ];
 
+    
     // Function to open and close the drawer
-    const toggleDrawer = (open) => (event) => {
-        if (
-          event.type === "keydown" &&
-          (event.key === "Tab" || event.key === "Shift")
-        ) {
-          return;
-        }
-        setDrawerOpen(open);
-      };
+     const toggleDrawer = (open) => {
+        setDrawerOpen(open); // Simplified to directly set state
+    };
 
     // Function to handle card selection and loading other components
     const loadComponent = (component) => {
@@ -27,12 +27,31 @@ const WhiteboardSc = () => {
 
     return (
         <Box sx={styles.whiteboardContainer}>
-            <Navbar toggleDrawer={toggleDrawer} loadComponent={loadComponent} /> {/* Pass loadComponent as a prop */}
-            <Box sx={styles.contentArea}>
-                {currentComponent} {/* Render the current component here */}
+        {/* Pass toggleDrawer without arrow function to keep it simple */}
+        <Navbar toggleDrawer={() => toggleDrawer(true)} /> 
+
+        {/* Drawer to show menu items */}
+        <Drawer anchor="left" open={drawerOpen} onClose={() => toggleDrawer(false)}>
+            <Box
+                sx={{ width: 250 }}
+                role="presentation"
+                onClick={() => toggleDrawer(false)}
+                onKeyDown={() => toggleDrawer(false)}
+            >
+                <List>
+                    {drawerItems.map((item) => (
+                        <ListItem button key={item.text} onClick={() => setCurrentComponent(<UpcomingFeatures />)}>
+                            <ListItemText primary={item.text} />
+                        </ListItem>
+                    ))}
+                </List>
             </Box>
-            <Footer />
+        </Drawer>
+        <Box sx={styles.contentArea}>
+            {currentComponent} {/* Render the current component here */}
         </Box>
+        <Footer />
+    </Box>
     );
 };
 
