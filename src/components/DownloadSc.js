@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, LinearProgress, Button } from "@mui/material";
+import { Box, Typography, LinearProgress, Button,Dialog, DialogContent, DialogTitle,CircularProgress } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const DownloadSc = () => {
@@ -11,6 +11,10 @@ const DownloadSc = () => {
   };
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewData, setPreviewData] = useState(null);
+
+  const dummyApiEndpoint = "https://jsonplaceholder.typicode.com/posts"; // Dummy API endpoint
 
   useEffect(() => {
     let progressInterval;
@@ -35,9 +39,26 @@ const DownloadSc = () => {
   }, [apiEndpoint]);
 
   const handlePreviewClick = () => {
-    // Implement the logic for previewing the content
-    alert("Preview initiated!");
+    if (dummyApiEndpoint) {
+      fetch(dummyApiEndpoint)
+        .then((response) => response.json())
+        .then((data) => {
+          setPreviewData(data);
+          setPreviewOpen(true);
+        })
+        .catch((err) => {
+          console.error("Error fetching preview data:", err);
+        });
+    } else {
+      alert("No API endpoint provided!");
+    }
   };
+
+  const handleClosePreview = () => {
+    setPreviewOpen(false);
+  };
+
+
 
   const handleDownloadClick = () => {
     // Implement the logic for previewing the content
@@ -123,7 +144,21 @@ const DownloadSc = () => {
           </Box>
         )}
       </Box>
-    </Box>
+      {/* Dialog for Preview */}
+      <Dialog open={previewOpen} onClose={handleClosePreview} maxWidth="md" fullWidth>
+        <DialogTitle>Preview</DialogTitle>
+        <DialogContent dividers>
+          {previewData ? (
+            <Typography variant="body1">
+              {JSON.stringify(previewData, null, 2)}
+            </Typography>
+            
+          ) : (
+            <CircularProgress />
+          )}
+        </DialogContent>
+      </Dialog>
+    </Box> 
   );
 };
 
