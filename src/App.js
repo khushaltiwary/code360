@@ -12,11 +12,27 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<SplashSc />} />
-        <Route path="/login" element={<LoginSc />} />
-        <Route path="/home" element={<WhiteboardSc />} />
-        <Route path="/download" element={<DownloadSc />} />
+      <Route path="/" element={<SplashSc />} /> {/* Initial splash screen */}
+       <Route path="/home" element={
+          <WhiteboardSc>
+            <HomeSc />
+          </WhiteboardSc>
+        } />
+
+       <Route path="/download" element={
+          <WhiteboardSc>
+            <DownloadSc />
+          </WhiteboardSc>
+        } />
+        <Route path="/UpcomingFeatures" element={
+          <WhiteboardSc>
+            <UpcomingFeatures />
+          </WhiteboardSc>
+        } />
+        
+        <Route path="/login" element={<LoginSc /> } />
         <Route path="/upcomingFeatures" element={<UpcomingFeatures />} />
+        
       </Routes>
     </Router>
   );

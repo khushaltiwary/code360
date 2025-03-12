@@ -25,7 +25,7 @@ const SplashSc = () => {
                     if (oldProgress >= 100) {
                         clearInterval(interval);
                         setTimeout(() => {
-                            navigate('/login'); // Navigate to LoginSc after completing progress
+                            navigate('/login'); // Navigate to White board after completing progress
                         }, 500); // Add a slight delay for UX
                         return 100; // Ensure it reaches 100%
                     }

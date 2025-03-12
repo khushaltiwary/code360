@@ -97,12 +97,12 @@ const LoginSc = () => {
 // Styles defined outside the component
 const styles = {
   container: {
-    height: "100vh",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#46beaa",
     padding: 2,
+    height:"100vh"
   },
   card: {
     //height: "40vh",

@@ -1,38 +1,25 @@
 import React, { useState } from "react";
 import {
-    AppBar,
-    Toolbar,
-    IconButton,
     Typography,
     Container,
-    Drawer,
-    List,
-    ListItem,
-    ListItemText,
     TextField,
     Box,
     Button,
     LinearProgress,
-    Link,
-    Divider,
 } from "@mui/material";
 import { Grid2, Card, CardContent } from "@mui/material";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
-import logo from '../assets/Worldline-Coconut-Horizontal.png';
+import { useNavigate } from "react-router-dom";
 
 const HomeSc = () => {
 
     //Navigate function to navigate to DownloadSc when button on feature card is clicked.
     const navigate = useNavigate();
 
-   
-
     //Git Link Logic and States Related to Validation of Git Link
 
     const [gitRepoLink, setGitRepoLink] = useState("");
     const [isValidGitHubLink, setIsValidGitHubLink] = useState(false); // State to track if the GitHub link is valid
-    const [personalAccessToken, setPersonalAccessToken] = useState(""); // State for PAT
+    //const [personalAccessToken, setPersonalAccessToken] = useState(""); // State for PAT
 
     const handleLinkChange = (event) => {
         const url = event.target.value;
@@ -328,10 +315,16 @@ const HomeSc = () => {
                         {/* "Download All Reports" card, separate from the grid */}
                         <Box sx={{ display: "flex", justifyContent: "center", marginY: 3 }}>
                             <Card
-                                sx={{
-                                    elevation: 3,
-                                    transition: "0.3s",
-                                    "&:hover": { boxShadow: 6 },
+                                sx={{ borderRadius: '12px',
+                                padding: '10px',
+                                textAlign: 'left',
+                                background: 'linear-gradient(white, #f0f8ff)',
+                                transition: '0.3s',
+                                  
+                                '&:hover': {
+                                  boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
+                                  transform: 'scale(1.02)',
+                              },
                                 }}
                             >
                                 <CardContent
@@ -378,14 +371,20 @@ const HomeSc = () => {
                             </Card>
                         </Box>
 
-                        <Grid2 container spacing={4}>
+                        <Grid2 container spacing={3}>
                             {features.map((feature, index) => (
                                 <Grid2 item xs={12} sm={6} md={3} key={index}>
                                     <Card
-                                        sx={{
-                                            elevation: 3,
-                                            transition: "0.3s",
-                                            "&:hover": { boxShadow: 6 },
+                                        sx={{ borderRadius: '12px',
+                                        padding: '10px',
+                                        textAlign: 'left',
+                                        background: 'linear-gradient(white, #f0f8ff)',
+                                        transition: '0.3s',
+                                          
+                                        '&:hover': {
+                                          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
+                                          transform: 'scale(1.02)',
+                                      },
                                         }}
                                     >
                                         <CardContent sx={{ padding: "20px" }}>

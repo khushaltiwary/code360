@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { Box, Drawer, List, ListItem, ListItemText } from "@mui/material";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import HomeSc from "./HomeSc";
-import UpcomingFeatures from './UpcomingFeatures';
+import { Link } from 'react-router-dom';
 
-const WhiteboardSc = () => {
-    const [currentComponent, setCurrentComponent] = useState(<HomeSc />);
+const WhiteboardSc = ({children}) => {
+    //const [currentComponent, setCurrentComponent] = useState(<HomeSc />);
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     const drawerItems = [
@@ -20,10 +19,10 @@ const WhiteboardSc = () => {
         setDrawerOpen(open); // Simplified to directly set state
     };
 
-    // Function to handle card selection and loading other components
+    /*// Function to handle card selection and loading other components
     const loadComponent = (component) => {
         setCurrentComponent(component);
-    };
+    };*/
 
     return (
         <Box sx={styles.whiteboardContainer}>
@@ -40,7 +39,7 @@ const WhiteboardSc = () => {
             >
                 <List>
                     {drawerItems.map((item) => (
-                        <ListItem button key={item.text} onClick={() => setCurrentComponent(<UpcomingFeatures />)}>
+                        <ListItem button key={item.text} component={Link} to={item.path}>
                             <ListItemText primary={item.text} />
                         </ListItem>
                     ))}
@@ -48,7 +47,7 @@ const WhiteboardSc = () => {
             </Box>
         </Drawer>
         <Box >{/* Only add css to this box when you want to apply it to all components in HomeS*/}
-            {currentComponent} {/* Render the current component here */}
+            {children} {/* Render the current component here */}
         </Box>
         <Footer />
     </Box>
