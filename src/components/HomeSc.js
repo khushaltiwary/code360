@@ -225,6 +225,7 @@ const HomeSc = () => {
                           placeholder="GitHub Access Token"
                           variant="outlined"
                           fullWidth
+                          type="password"
                           //value={personalAccessToken}
                           //onChange={(e) => setPersonalAccessToken(e.target.value)}
                           sx={{
