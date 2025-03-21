@@ -9,16 +9,19 @@ import {
 } from "@mui/material";
 import { Grid2, Card, CardContent } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { fetchPublicRepo, fetchPrivateRepo } from "../reduxToolkit/slices/githubRepoSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from 'react-redux';
+import { generateDocumentation, generateCodeReview, generateUnitTest, generateCodeEnhancement } from '../reduxToolkit/slices/githubRepoSlice';
+
+
 
 const HomeSc = () => {
 
     //Navigate function to navigate to DownloadSc when button on feature card is clicked.
     const navigate = useNavigate();
-    
+
     const dispatch = useDispatch();
-    const { data, loading, error } = useSelector((state) => state.githubRepo);
+    const { loading, error, jobStatus } = useSelector(state => state.githubRepo); // Replace with the correct state path
+
 
     //Git Link Logic and States Related to Validation of Git Link
 
@@ -28,7 +31,7 @@ const HomeSc = () => {
 
     const [username, setUsername] = useState('');
     const [token, setToken] = useState('');
-    const [isPrivate, setIsPrivate] = useState(false);
+    // const [isPrivate, setIsPrivate] = useState(false);
 
     //States to set Workflow after button is clicked and Progress bar is completed.
 
@@ -47,7 +50,7 @@ const HomeSc = () => {
         setIsValidGitHubLink(url.trim() !== "" && githubLinkPattern.test(url));
     };
 
-    
+
     //Hardcoded Random Facts to show along with Progress Bar.
     const randomFacts = [
         "Solution utilizes GitLab CI/CD as a DevOps platform to streamline software development processes.",
@@ -74,10 +77,6 @@ const HomeSc = () => {
             .writeText(gitRepoLink) // Copy the URL to clipboard
             .then(() => {
 
-                handleFetch();
-
-                console.log("Copied link:", gitRepoLink);
-
                 // Text field is enabled initially
                 setIsTextFieldDisabled(false);
 
@@ -88,6 +87,10 @@ const HomeSc = () => {
 
                 // Do not show Items(any thing that should be displayed after complition of Progress bar) initialy.
                 setShowItems(false);
+
+                // Dispatch the generateDocumentation action as an example
+                dispatch(generateDocumentation({ gitRepoLink, username, token }));
+
 
                 //Progress Bar Logic -
                 const progressInterval = setInterval(() => {
@@ -165,23 +168,7 @@ const HomeSc = () => {
     };
 
 
-    const handleFetch = async () => {
-        if (isPrivate) {
-            const resultAction = await dispatch(fetchPrivateRepo({ username, token }));
-            if (fetchPrivateRepo.fulfilled.match(resultAction)) {
-                console.log('Private Repos:', resultAction.payload); // Log the response
-            } else {
-                console.error(resultAction.error.message); // Log any error
-            }
-        } else {
-            const resultAction = await dispatch(fetchPublicRepo(username));
-            if (fetchPublicRepo.fulfilled.match(resultAction)) {
-                console.log('Public Repos:', resultAction.payload); // Log the response
-            } else {
-                console.error(resultAction.error.message); // Log any error
-            }
-        }
-    };
+ 
 
     return (
         <Box
@@ -200,7 +187,7 @@ const HomeSc = () => {
                     display: "flex",
                     flexDirection: "column",
                     overflowY: "auto",
-                    
+
                 }}
             >
                 {!ShowItems && (
@@ -252,20 +239,20 @@ const HomeSc = () => {
                         />
                         {/* Personal Access Token Input */}
                         <TextField
-                          placeholder="GitHub Access Token"
-                          variant="outlined"
-                          fullWidth
-                          type="password"
-                          //value={personalAccessToken}
-                          //onChange={(e) => setPersonalAccessToken(e.target.value)}
-                          onChange={(e) => setToken(e.target.value)}
-                          sx={{
-                            "& .MuiInputBase-input": {
-                              textAlign: "center",
-                            },
-                            marginBottom: "1rem",
-                            width: "40%",
-                          }}
+                            placeholder="GitHub Access Token"
+                            variant="outlined"
+                            fullWidth
+                            type="password"
+                            //value={personalAccessToken}
+                            //onChange={(e) => setPersonalAccessToken(e.target.value)}
+                            onChange={(e) => setToken(e.target.value)}
+                            sx={{
+                                "& .MuiInputBase-input": {
+                                    textAlign: "center",
+                                },
+                                marginBottom: "1rem",
+                                width: "40%",
+                            }}
                         />
 
                         <Button
@@ -347,16 +334,17 @@ const HomeSc = () => {
                         {/* "Download All Reports" card, separate from the grid */}
                         <Box sx={{ display: "flex", justifyContent: "center", marginY: 3 }}>
                             <Card
-                                sx={{ borderRadius: '12px',
-                                padding: '10px',
-                                textAlign: 'left',
-                                background: 'linear-gradient(white, #f0f8ff)',
-                                transition: '0.3s',
-                                  
-                                '&:hover': {
-                                  boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
-                                  transform: 'scale(1.02)',
-                              },
+                                sx={{
+                                    borderRadius: '12px',
+                                    padding: '10px',
+                                    textAlign: 'left',
+                                    background: 'linear-gradient(white, #f0f8ff)',
+                                    transition: '0.3s',
+
+                                    '&:hover': {
+                                        boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
+                                        transform: 'scale(1.02)',
+                                    },
                                 }}
                             >
                                 <CardContent
@@ -407,16 +395,17 @@ const HomeSc = () => {
                             {features.map((feature, index) => (
                                 <Grid2 item xs={12} sm={6} md={3} key={index}>
                                     <Card
-                                        sx={{ borderRadius: '12px',
-                                        padding: '10px',
-                                        textAlign: 'left',
-                                        background: 'linear-gradient(white, #f0f8ff)',
-                                        transition: '0.3s',
-                                          
-                                        '&:hover': {
-                                          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
-                                          transform: 'scale(1.02)',
-                                      },
+                                        sx={{
+                                            borderRadius: '12px',
+                                            padding: '10px',
+                                            textAlign: 'left',
+                                            background: 'linear-gradient(white, #f0f8ff)',
+                                            transition: '0.3s',
+
+                                            '&:hover': {
+                                                boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
+                                                transform: 'scale(1.02)',
+                                            },
                                         }}
                                     >
                                         <CardContent sx={{ padding: "20px" }}>
@@ -457,7 +446,7 @@ const HomeSc = () => {
                 )}
             </Container>
 
-            
+
         </Box>
     );
 };

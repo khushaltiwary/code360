@@ -1,43 +1,71 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// Fetch public repositories by username
-export const fetchPublicRepo = createAsyncThunk('api/fetchPublicRepo', async (username) => {
-    const response = await axios.get(`http://your-backend-url/github/generate-documentation?username=${username}`);
-    if (!response.ok) throw new Error('Failed to fetch public repositories.');
+// Endpoint base URL
+const BASE_URL = "http://your-python-backend-url/api"; // Replace with your actual backend URL
+
+// Fetch documentation
+export const generateDocumentation = createAsyncThunk('github/generateDocumentation', async (requestData) => {
+    const response = await axios.post(`${BASE_URL}/github/generate-documentation`, requestData);
+    return response.data; // Return the result
+});
+
+// Fetch code review
+export const generateCodeReview = createAsyncThunk('github/generateCodeReview', async (requestData) => {
+    const response = await axios.post(`${BASE_URL}/github/generate-code_review`, requestData);
     return response.data;
 });
 
-// Fetch private repositories with token
-export const fetchPrivateRepo = createAsyncThunk('api/fetchPrivateRepo', async ({ username, token }) => {
-    const response = await axios.post(`http://your-backend-url/github/generate-documentation`, {
-        username,
-        headers: {
-            Authorization: `Bearer ${token}`, // Use the token for authorization
-        },
-    });
-    if (!response.ok) throw new Error('Failed to fetch private repositories. Check your token.');
+// Fetch unit test
+export const generateUnitTest = createAsyncThunk('github/generateUnitTest', async (requestData) => {
+    const response = await axios.post(`${BASE_URL}/github/generate_unit_test`, requestData);
     return response.data;
 });
 
+// Fetch code enhancement
+export const generateCodeEnhancement = createAsyncThunk('github/generateCodeEnhancement', async (requestData) => {
+    const response = await axios.post(`${BASE_URL}/github/generate_code_enhancement`, requestData);
+    return response.data;
+});
+
+// Create the slice
 const githubRepoSlice = createSlice({
     name: 'githubRepo',
     initialState: {
         repos: [],
         loading: false,
         error: null,
+        jobStatus: null,
     },
     extraReducers: (builder) => {
-        // Handle pending, fulfilled, and rejected states
         builder
-            .addCase(fetchPublicRepo.pending, (state) => { state.loading = true; })
-            .addCase(fetchPublicRepo.fulfilled, (state, action) => { state.loading = false; state.repos = action.payload; })
-            .addCase(fetchPublicRepo.rejected, (state, action) => { state.loading = false; state.error = action.error.message; })
-            .addCase(fetchPrivateRepo.pending, (state) => { state.loading = true; })
-            .addCase(fetchPrivateRepo.fulfilled, (state, action) => { state.loading = false; state.repos = action.payload; })
-            .addCase(fetchPrivateRepo.rejected, (state, action) => { state.loading = false; state.error = action.error.message; });
+            .addCase(generateDocumentation.pending, (state) => {
+                state.loading = true;
+                state.error = null;  // Reset any previous errors
+            })
+            .addCase(generateDocumentation.fulfilled, (state, action) => {
+                state.loading = false;
+                state.jobStatus = action.payload;  // Store job status or response
+            })
+            .addCase(generateDocumentation.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;  // Set error message
+            })
+            .addCase(generateCodeReview.pending, (state) => {
+                state.loading = true;
+                state.error = null;  // Reset any previous errors
+            })
+            .addCase(generateCodeReview.fulfilled, (state, action) => {
+                state.loading = false;
+                state.jobStatus = action.payload;  // Update job status
+            })
+            .addCase(generateCodeReview.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;  // Set error message
+            });
+        // Add handlers for unit test and code enhancement here similarly
     },
 });
 
-// Export the reducer
+// Export the actions and reducer
 export default githubRepoSlice.reducer;
