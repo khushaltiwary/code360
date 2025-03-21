@@ -10,9 +10,15 @@ import {
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
+import { loginSuccess, loginFailure } from "../reduxToolkit/slices/loginSlice"; // Import actions from your slice
+
+
 
 const LoginSc = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Create dispatch to send actions
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
@@ -38,7 +44,11 @@ const LoginSc = () => {
     setErrors(errors);
 
     if (valid) {
-      navigate("/home");
+      const userData = { email }; // You can enrich this object with real user data
+      dispatch(loginSuccess(userData)); // Dispatch login success action
+      navigate("/home"); 
+    } else {
+      dispatch(loginFailure(errors)); // Dispatch login failure action
     }
   };
 

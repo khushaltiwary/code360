@@ -9,17 +9,34 @@ import {
 } from "@mui/material";
 import { Grid2, Card, CardContent } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { fetchPublicRepo, fetchPrivateRepo } from "../reduxToolkit/slices/githubRepoSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const HomeSc = () => {
 
     //Navigate function to navigate to DownloadSc when button on feature card is clicked.
     const navigate = useNavigate();
+    
+    const dispatch = useDispatch();
+    const { data, loading, error } = useSelector((state) => state.githubRepo);
 
     //Git Link Logic and States Related to Validation of Git Link
 
     const [gitRepoLink, setGitRepoLink] = useState("");
     const [isValidGitHubLink, setIsValidGitHubLink] = useState(false); // State to track if the GitHub link is valid
     //const [personalAccessToken, setPersonalAccessToken] = useState(""); // State for PAT
+
+    const [username, setUsername] = useState('');
+    const [token, setToken] = useState('');
+    const [isPrivate, setIsPrivate] = useState(false);
+
+    //States to set Workflow after button is clicked and Progress bar is completed.
+
+    const [progress, setProgress] = useState(0); // State for progress bar
+    const [HideItems, setHideItems] = useState(false); // State to Hide items after progress bar is done i.e manage visibility
+    const [randomFact, setRandomFact] = useState(""); // State for displaying a random fact
+    const [ShowItems, setShowItems] = useState(false); // State for Showing Items after Progress bar visibility
+    const [isTextFieldDisabled, setIsTextFieldDisabled] = useState(false); // State to disalbe Input Text field
 
     const handleLinkChange = (event) => {
         const url = event.target.value;
@@ -30,15 +47,7 @@ const HomeSc = () => {
         setIsValidGitHubLink(url.trim() !== "" && githubLinkPattern.test(url));
     };
 
-    //States to set Workflow after button is clicked and Progress bar is completed.
-
-    const [progress, setProgress] = useState(0); // State for progress bar
-    const [HideItems, setHideItems] = useState(false); // State to Hide items after progress bar is done i.e manage visibility
-    const [randomFact, setRandomFact] = useState(""); // State for displaying a random fact
-    const [ShowItems, setShowItems] = useState(false); // State for Showing Items after Progress bar visibility
-    const [isTextFieldDisabled, setIsTextFieldDisabled] = useState(false); // State to disalbe Input Text field
-
-
+    
     //Hardcoded Random Facts to show along with Progress Bar.
     const randomFacts = [
         "Solution utilizes GitLab CI/CD as a DevOps platform to streamline software development processes.",
@@ -64,6 +73,9 @@ const HomeSc = () => {
         navigator.clipboard
             .writeText(gitRepoLink) // Copy the URL to clipboard
             .then(() => {
+
+                handleFetch();
+
                 console.log("Copied link:", gitRepoLink);
 
                 // Text field is enabled initially
@@ -153,6 +165,24 @@ const HomeSc = () => {
     };
 
 
+    const handleFetch = async () => {
+        if (isPrivate) {
+            const resultAction = await dispatch(fetchPrivateRepo({ username, token }));
+            if (fetchPrivateRepo.fulfilled.match(resultAction)) {
+                console.log('Private Repos:', resultAction.payload); // Log the response
+            } else {
+                console.error(resultAction.error.message); // Log any error
+            }
+        } else {
+            const resultAction = await dispatch(fetchPublicRepo(username));
+            if (fetchPublicRepo.fulfilled.match(resultAction)) {
+                console.log('Public Repos:', resultAction.payload); // Log the response
+            } else {
+                console.error(resultAction.error.message); // Log any error
+            }
+        }
+    };
+
     return (
         <Box
             sx={{
@@ -228,6 +258,7 @@ const HomeSc = () => {
                           type="password"
                           //value={personalAccessToken}
                           //onChange={(e) => setPersonalAccessToken(e.target.value)}
+                          onChange={(e) => setToken(e.target.value)}
                           sx={{
                             "& .MuiInputBase-input": {
                               textAlign: "center",
