@@ -23,7 +23,7 @@ const DownloadSc = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState(null);
 
-  const dummyApiEndpoint = "https://jsonplaceholder.typicode.com/posts"; // Dummy API endpoint
+  const dummyApiEndpoint = "http://localhost:8000/"; // Dummy API endpoint
 
   useEffect(() => {
     let progressInterval;

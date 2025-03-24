@@ -21,7 +21,8 @@ const HomeSc = () => {
 
     const dispatch = useDispatch();
     const { loading, error, jobStatus } = useSelector(state => state.githubRepo); // Replace with the correct state path
-
+    
+    const branch="master";
 
     //Git Link Logic and States Related to Validation of Git Link
 
@@ -142,7 +143,7 @@ const HomeSc = () => {
             .writeText(gitRepoLink)
             .then(() => {
                 // Dispatch the generateDocumentation action with the gitRepoLink
-                dispatch(generateDocumentation({ repository_url: gitRepoLink }));
+                dispatch(generateDocumentation({ repository_url: gitRepoLink , branch }));
    
                 // You can add an alert or console log to notify success
                 alert("Link copied to clipboard and dispatched for documentation generation!");
