@@ -2,12 +2,42 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // Endpoint base URL
-const BASE_URL = "http://your-python-backend-url/api"; // Replace with your actual backend URL
+const BASE_URL = "http://localhost:8000"; // Replace with your actual backend URL
 
 // Fetch documentation
 export const generateDocumentation = createAsyncThunk('github/generateDocumentation', async (requestData) => {
-    const response = await axios.post(`${BASE_URL}/github/generate-documentation`, requestData);
-    return response.data; // Return the result
+   
+    // Log the request data being sent
+    console.log("Request Data for Documentation Generation:", requestData);
+ 
+    try {
+        // Sending the POST request
+        const response = await axios.post(`${BASE_URL}/github/generate-documentation`, requestData);
+       
+        // Log the HTTP response
+        console.log("Response from Documentation Generation:", response);
+       
+        // Log the response status and data
+        console.log("Response Status:", response.status);
+        console.log("Response Data:", response.data);
+ 
+        return response.data; // Return the result
+       
+    } catch (error) {
+        // Log any errors that occur during the request
+        console.error("Error occurred during documentation generation:", error);
+       
+        // If the error response exists, log that too
+        if (error.response) {
+            console.error("Error Response Data:", error.response.data);
+            console.error("Error Response Status:", error.response.status);
+        } else {
+            console.error("Error Message:", error.message);
+        }
+ 
+        // Rethrow the error to be caught in extraReducers of your slice
+        throw error;
+    }
 });
 
 // Fetch code review
