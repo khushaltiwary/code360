@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // Endpoint base URL
-const BASE_URL = "http://localhost:8000"; // Replace with your actual backend URL
+const BASE_URL = "http://34.8.212.114"; // Replace with your actual backend URL
 
 // Fetch documentation
 export const generateDocumentation = createAsyncThunk('github/generateDocumentation', async (requestData) => {
