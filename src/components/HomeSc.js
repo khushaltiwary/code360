@@ -74,118 +74,110 @@ const HomeSc = () => {
 
     
     //Copy Button Logic and Workflow after Button is Clicked
-    // const handleCopyClick = () => {
-    //     if (!isValidGitHubLink) return; // Prevent copying if the link is invalid
-    //     navigator.clipboard
-    //         .writeText(gitRepoLink) // Copy the URL to clipboard
-    //         .then(() => {
-
-    //             setrepository_url(gitRepoLink);
-
-    //             // Text field is enabled initially
-    //             setIsTextFieldDisabled(false);
-
-    //             // States For Progress bar
-    //             setHideItems(true);
-
-    //             setProgress(0);
-
-    //             // Do not show Items(any thing that should be displayed after complition of Progress bar) initialy.
-    //             setShowItems(false);
-
-    //             // Dispatch the generateDocumentation action as an example
-    //             dispatch(generateDocumentation({ repository_url }));
-
-
-    //             //Progress Bar Logic -
-    //             const progressInterval = setInterval(() => {
-    //                 setProgress((oldProgress) => {
-    //                     if (oldProgress >= 100) {
-    //                         clearInterval(progressInterval); // Stop the timer when progress is 100
-    //                         setHideItems(false); // Hide the progress bar after complection
-    //                         setShowItems(true); //Show Items when progress is completed
-    //                         setIsTextFieldDisabled(true); // Disable the text field
-    //                         alert("Link copied successfully to Google Storage bucket!");
-    //                         return 100;
-    //                     }
-
-    //                     //console.log("Progress updated to:", oldProgress);
-
-    //                     return oldProgress + 1; // Increment for a longer duration
-    //                 });
-    //             }, 100);
-
-    //             // Facts Showing Logic -
-
-    //             const factInterval = setInterval(() => {
-    //                 // Separate interval for random facts
-    //                 const randomFactIndex = Math.floor(
-    //                     Math.random() * randomFacts.length
-    //                 );
-    //                 setRandomFact(randomFacts[randomFactIndex]);
-    //             }, 2000); // Display a new random fact every 3 seconds
-
-    //             setTimeout(() => {
-    //                 clearInterval(factInterval); // Stop updating facts when progress is finished
-    //             }, 25000);
-    //         })
-
-    //         .catch((err) => {
-    //             console.error("Failed to copy: ", err);
-    //         });
-    // };
 
     const handleCopyClick = () => {
         if (!isValidGitHubLink) return; // Prevent copying if the link is invalid
-   
-        // Copy the URL to clipboard
         navigator.clipboard
-            .writeText(gitRepoLink)
+            .writeText(gitRepoLink) // Copy the URL to clipboard
             .then(() => {
-                // Dispatch the generateDocumentation action with the gitRepoLink
-                dispatch(generateDocumentation({ repository_url: gitRepoLink , branch }));
+
+                setrepository_url(gitRepoLink);
+
+                // Text field is enabled initially
+                setIsTextFieldDisabled(false);
+
+                // States For Progress bar
+                setHideItems(true);
+
+                setProgress(0);
+
+                // Do not show Items(any thing that should be displayed after complition of Progress bar) initialy.
+                setShowItems(false);
+
+                // Dispatch the generateDocumentation action as an example
+                //dispatch(generateDocumentation({ repository_url: gitRepoLink , branch }));
    
                 // You can add an alert or console log to notify success
-                alert("Link copied to clipboard and dispatched for documentation generation!");
+                alert("Link copied to clipboard and dispatched");
+
+
+                //Progress Bar Logic -
+                const progressInterval = setInterval(() => {
+                    setProgress((oldProgress) => {
+                        if (oldProgress >= 100) {
+                            clearInterval(progressInterval); // Stop the timer when progress is 100
+                            setHideItems(false); // Hide the progress bar after complection
+                            setShowItems(true); //Show Items when progress is completed
+                            setIsTextFieldDisabled(true); // Disable the text field
+                            alert("Link copied successfully to Google Storage bucket!");
+                            return 100;
+                        }
+
+                        //console.log("Progress updated to:", oldProgress);
+
+                        return oldProgress + 1; // Increment for a longer duration
+                    });
+                }, 100);
+
+                // Facts Showing Logic -
+
+                const factInterval = setInterval(() => {
+                    // Separate interval for random facts
+                    const randomFactIndex = Math.floor(
+                        Math.random() * randomFacts.length
+                    );
+                    setRandomFact(randomFacts[randomFactIndex]);
+                }, 2000); // Display a new random fact every 3 seconds
+
+                setTimeout(() => {
+                    clearInterval(factInterval); // Stop updating facts when progress is finished
+                }, 25000);
             })
+
             .catch((err) => {
                 console.error("Failed to copy: ", err);
             });
     };
 
-
     //Main feature section Features -
+    
     const features = [
         {
             title: "Test Cases",
             description: "Description of Test Cases",
-            apiEndpoint: "/api/feature1",
         },
         {
             title: "Code Review ",
             description: "Description Code Review",
-            apiEndpoint: "/api/feature2",
         },
         {
             title: "Code Enhancements",
             description: "Description of Code Enhancements",
-            apiEndpoint: "/api/feature3",
         },
         {
             title: "Code Documentation",
             description: "Description of Code Documentation",
-            apiEndpoint: "/api/feature4",
         },
     ];
 
 
     const handleFeatureClick = (feature) => {
+
+        switch (feature.title) {
+            case 'Code Documentation':
+                dispatch(generateDocumentation({ repository_url: gitRepoLink, branch }));
+                break;
+            // case 'Test Cases':
+            //     dispatch(generateTestCases({ repository_url: gitRepoLink, branch }));
+            //     break;
+            // Add more cases for other features...
+        }
+
         // Navigate to the DownloadSc page, passing feature data as state
         navigate("/download", {
             state: {
                 title: feature.title,
                 description: feature.description,
-                apiEndpoint: feature.apiEndpoint,
             },
         });
     };
@@ -404,7 +396,6 @@ const HomeSc = () => {
                                             handleFeatureClick({
                                                 title: "All Reports",
                                                 description: "All 360 Analytics Reports ",
-                                                apiEndpoint: "/api/download-reports",
                                             })
                                         }
                                     >
