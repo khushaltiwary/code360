@@ -28,7 +28,6 @@ const HomeSc = () => {
 
     const [gitRepoLink, setGitRepoLink] = useState("");
     const [isValidGitHubLink, setIsValidGitHubLink] = useState(false); // State to track if the GitHub link is valid
-    //const [personalAccessToken, setPersonalAccessToken] = useState(""); // State for PAT
 
     const [username, setUsername] = useState('');
     const [token, setToken] = useState('');
@@ -93,12 +92,6 @@ const HomeSc = () => {
 
                 // Do not show Items(any thing that should be displayed after complition of Progress bar) initialy.
                 setShowItems(false);
-
-                // Dispatch the generateDocumentation action as an example
-                //dispatch(generateDocumentation({ repository_url: gitRepoLink , branch }));
-   
-                // You can add an alert or console log to notify success
-                alert("Link copied to clipboard and dispatched");
 
 
                 //Progress Bar Logic -
@@ -165,7 +158,7 @@ const HomeSc = () => {
 
         switch (feature.title) {
             case 'Code Documentation':
-                dispatch(generateDocumentation({ repository_url: gitRepoLink, branch }));
+                dispatch(generateDocumentation({ repository_url: gitRepoLink, branch , repo_token:token}));
                 break;
             // case 'Test Cases':
             //     dispatch(generateTestCases({ repository_url: gitRepoLink, branch }));
@@ -258,8 +251,7 @@ const HomeSc = () => {
                             variant="outlined"
                             fullWidth
                             type="password"
-                            //value={personalAccessToken}
-                            //onChange={(e) => setPersonalAccessToken(e.target.value)}
+                            value={token}
                             onChange={(e) => setToken(e.target.value)}
                             sx={{
                                 "& .MuiInputBase-input": {
