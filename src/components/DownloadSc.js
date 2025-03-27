@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector , useDispatch} from "react-redux";
 import {
   Box,
   Typography,
@@ -11,8 +12,10 @@ import {
   Container,
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
+import { generateDocumentation , selectDocumentationStatus, selectDocumentationUrls} from "../reduxToolkit/slices/githubRepoSlice";
 
 const DownloadSc = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const { title, description, apiEndpoint } = location.state || {
     title: "",
@@ -23,29 +26,66 @@ const DownloadSc = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState(null);
 
+  //Selected to access Redux state
+  const documentationStatus = useSelector(selectDocumentationStatus);
+  const documentationUrls = useSelector(selectDocumentationUrls);
+  //const progress = documentationStatus === "completed" ? 100 : 0;
+
+  const BASE_URL = "http://34.8.212.114";
   const dummyApiEndpoint = "http://localhost:8000/"; // Dummy API endpoint
 
+  const [fileUrls, setFileUrls] = useState({});
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
+
+  const statusResponse = useSelector(
+    (state) => state.githubRepo.statusResponse
+  );
+
   useEffect(() => {
-    let progressInterval;
+    // Check when status is completed, set file URLs and other necessary actions
+    if (documentationStatus === "completed" && Object.keys(documentationUrls).length > 0) {
+      setProgress(100);
+    }
+  }, [documentationStatus, documentationUrls]);
 
-    //if (apiEndpoint) {
-    // Simulate progress for demonstration purposes
-    progressInterval = setInterval(() => {
-      setProgress((prevProgress) => {
-        if (prevProgress >= 100) {
-          clearInterval(progressInterval);
-          // You can handle completion logic here
-          return 100;
-        }
-        return Math.min(prevProgress + 10, 100);
-      });
-    }, 500); // Increment every 500ms
-    //}
 
-    return () => {
-      clearInterval(progressInterval); // Clean up interval on component unmount
-    };
-  }, [apiEndpoint]);
+  //useEffect(() => {
+  //  if (statusResponse) {
+  //    console.log("Status Response:", statusResponse);
+//
+  //    // If status is completed, set progress to 100%
+  //    if (statusResponse.status === "completed") {
+  //      setProgress(100);
+  //      // Set file URLs from the response
+  //      if (statusResponse.documentation_urls) {
+  //        setFileUrls(statusResponse.documentation_urls);
+  //      }
+  //    }
+  //  }
+  //}, [statusResponse]);
+
+  // useEffect(() => {
+  //   let progressInterval;
+
+  //   if (apiEndpoint) {
+  //     console.log("API Endpoint recieved in Download Sc ", { apiEndpoint });
+  //     // Simulate progress for demonstration purposes
+  //     progressInterval = setInterval(() => {
+  //       setProgress((prevProgress) => {
+  //         if (prevProgress >= 100) {
+  //           clearInterval(progressInterval);
+  //           // You can handle completion logic here
+  //           return 100;
+  //         }
+  //         return Math.min(prevProgress + 10, 100);
+  //       });
+  //     }, 100); // Increment every 500ms
+  //   }
+
+  //   return () => {
+  //     clearInterval(progressInterval); // Clean up interval on component unmount
+  //   };
+  // }, [apiEndpoint]);
 
   const handlePreviewClick = () => {
     if (dummyApiEndpoint) {
@@ -68,16 +108,55 @@ const DownloadSc = () => {
   };
 
   const handleDownloadClick = () => {
-    // Implement the logic for previewing the content
-    alert("Download initiated!");
+    if (!Object.keys(documentationUrls).length) {
+      alert("No files available for download yet.");
+      return;
+    }
+    setDownloadDialogOpen(true);
   };
+
+  const handleFileClick = (url) => {
+    window.open(url, "_blank"); // Open URL in a new tab
+  };
+
+  //useEffect(() => {
+  //  let pollInterval;
+  //  const pollJobStatus = async () => {
+  //    try {
+  //      const response = await axios.get(`${BASE_URL}/github/job-status/${jobId}`);
+  //      console.log("Polling job status:", response.data.status);
+  //
+  //      if (response.data.status === "completed") {
+  //        clearInterval(pollInterval);
+  //        setProgress(100); // Set progress to 100 once job is completed
+  //        setFileUrls(response.data.documentation_urls || {});
+  //      } else if (response.data.status === "failed") {
+  //        clearInterval(pollInterval);
+  //        console.error("Job failed: ", response.data);
+  //      }
+  //    } catch (error) {
+  //      console.error("Error during polling:", error);
+  //    }
+  //  };
+  //    const job_id = response.data.job_id;
+  //    console.log("Job ID:", job_id);
+  //
+  //  // Start polling if jobId is provided
+  //  if (jobId) {
+  //    pollInterval = setInterval(pollJobStatus, 5000); // Poll every 5 seconds
+  //  }
+  //
+  //  return () => {
+  //    clearInterval(pollInterval);
+  //  };
+  //}, [jobId, BASE_URL]);
 
   return (
     <Container
       sx={{
         display: "flex",
         flexDirection: "column",
-        justifyContent:"center",
+        justifyContent: "center",
         minHeight: "77vh",
       }}
     >
@@ -160,6 +239,32 @@ const DownloadSc = () => {
             </Box>
           )}
         </Box>
+
+        <Dialog
+          open={downloadDialogOpen}
+          onClose={() => setDownloadDialogOpen(false)}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>Files Available for Download</DialogTitle>
+          <DialogContent dividers>
+            {documentationUrls &&
+              Object.entries(documentationUrls).map(([fileName, urls]) => (
+                <Box key={fileName} sx={{ marginBottom: "1rem" }}>
+                  <Typography variant="h6">{fileName}</Typography>
+                  <Button
+                    onClick={() => handleFileClick(urls.markdown_url)}
+                    sx={{ marginRight: "1rem" }}
+                  >
+                    Markdown URL
+                  </Button>
+                  <Button onClick={() => handleFileClick(urls.docx_url)}>
+                    DOCX URL
+                  </Button>
+                </Box>
+              ))}
+          </DialogContent>
+        </Dialog>
 
         {/* Dialog for Preview */}
         <Dialog

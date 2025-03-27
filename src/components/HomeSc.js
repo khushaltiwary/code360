@@ -141,18 +141,22 @@ const HomeSc = () => {
     {
       title: "Test Cases",
       description: "Description of Test Cases",
+      apiEndpoint:""
     },
     {
       title: "Code Review",
       description: "Description Code Review",
+      apiEndpoint:"github/generateCodeReview"
     },
     {
       title: "Code Enhancements",
       description: "Description of Code Enhancements",
+      apiEndpoint:""
     },
     {
       title: "Code Documentation",
       description: "Description of Code Documentation",
+      apiEndpoint:"github/generateDocumentation"
     },
   ];
 
@@ -185,6 +189,7 @@ const HomeSc = () => {
       state: {
         title: feature.title,
         description: feature.description,
+        apiEndpoint: feature.apiEndpoint,
       },
     });
   };
