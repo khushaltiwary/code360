@@ -15,34 +15,35 @@ const SplashSc = () => {
     const [progress, setProgress] = useState(0);
     const [loading, setLoading] = useState(false); // State to control loading
 
-    useEffect(() => {
-        let interval;
+    // useEffect(() => {
+    //     let interval;
 
-        if (loading) {
-            // Progress updating function
-            interval = setInterval(() => {
-                setProgress((oldProgress) => {
-                    if (oldProgress >= 100) {
-                        clearInterval(interval);
-                        setTimeout(() => {
-                            navigate('/login'); // Navigate to White board after completing progress
-                        }, 500); // Add a slight delay for UX
-                        return 100; // Ensure it reaches 100%
-                    }
-                    return Math.min(oldProgress + 5, 100); // Increment progress
-                });
-            }, 150);
-        }
+    //     if (loading) {
+    //         // Progress updating function
+    //         interval = setInterval(() => {
+    //             setProgress((oldProgress) => {
+    //                 if (oldProgress >= 100) {
+    //                     clearInterval(interval);
+    //                     setTimeout(() => {
+    //                         navigate('/login'); // Navigate to White board after completing progress
+    //                     }, 500); // Add a slight delay for UX
+    //                     return 100; // Ensure it reaches 100%
+    //                 }
+    //                 return Math.min(oldProgress + 5, 100); // Increment progress
+    //             });
+    //         }, 150);
+    //     }
 
-        return () => {
-            clearInterval(interval);
-        };
-    }, [loading, navigate]);
+    //     return () => {
+    //         clearInterval(interval);
+    //     };
+    // }, [loading, navigate]);
 
 
     const handleStart = () => {
         setLoading(true); // Start loading when the button is clicked
         setProgress(0); // Reset progress to 0
+        navigate('/login');
     };
 
 
@@ -54,10 +55,11 @@ const SplashSc = () => {
             <Typography sx={styles.description}>
                 <i>Generate AI enabled - code reviews, reports, test-cases & documentation.</i>
             </Typography>
+             {/* Main Content 
             <Box sx={styles.progressContainer}>
                 <LinearProgress variant="determinate" value={progress} sx={styles.progressBar} />
                 <Typography sx={styles.percentage}>{progress}%</Typography>
-            </Box>
+            </Box>*/}
             <Button
                 variant="contained"
                 sx={styles.button}
