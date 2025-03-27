@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../assets/Worldline-Coconut-Horizontal.png"; // Adjust the path to your logo
+import { Link } from "react-router-dom";
 
 const Navbar = ({ toggleDrawer }) => {
     return (
@@ -23,7 +24,9 @@ const Navbar = ({ toggleDrawer }) => {
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     Code Analytics
                 </Typography>
-                <img src={logo} alt="Company Logo" style={{ height: "40px" }} />
+                <Link to="/home">
+                <img src={logo} alt="Company Logo" style={{ height: "40px", cursor: "pointer" }} />
+                </Link>
             </Toolbar>
         </AppBar>
     );
