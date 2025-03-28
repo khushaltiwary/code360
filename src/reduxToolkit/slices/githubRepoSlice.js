@@ -123,6 +123,109 @@ export const checkRepoPrivacy = createAsyncThunk(
 //   }
 // );
 
+// export const generateDocumentation = createAsyncThunk(
+//   "github/generateDocumentation",
+//   async (requestData, { rejectWithValue }) => {
+//     console.log("Request Data for Documentation Generation:", requestData);
+
+//     try {
+//       const response = await axios.post(
+//         `${BASE_URL}/github/generate-documentation`,
+//         requestData
+//       );
+
+//       console.log("Response from Documentation Generation:", response);
+//       console.log("Response Status:", response.status);
+//       console.log("Response Data:", response.data);
+
+//       if (response.status !== 200) {
+//         console.error("Documentation generation request failed!");
+//         return rejectWithValue("Request failed!");
+//       }
+
+//       const job_id = response.data.job_id;
+//       console.log("Job ID:", job_id);
+
+//       console.log("2. Polling job status...");
+
+//       let pollCount = 0;
+//       const maxPolls = 30;
+//       const pollInterval = 15000; // 15 seconds
+
+//       const pollJobStatus = async () => {
+//         while (pollCount < maxPolls) {
+//           pollCount++;
+//           console.log(`Poll #${pollCount}...`);
+
+//           try {
+//             const statusResponse = await axios.get(
+//               `${BASE_URL}/github/job-status/${job_id}`
+//             );
+
+//             console.log("Status Code:", statusResponse.status);
+
+//             if (statusResponse.status !== 200) {
+//               console.error(
+//                 "Failed to get job status:",
+//                 statusResponse.statusText
+//               );
+//               return rejectWithValue("Failed to fetch job status!");
+//             }
+
+//             const statusData = statusResponse.data;
+//             console.log("Job Status:", statusData.status);
+//             console.log("Response:", JSON.stringify(statusData, null, 2));
+
+//             if (statusData.status === "completed") {
+//               console.log("Job processing finished!");
+//               if (statusData.documentation_urls) {
+//                 console.log("3. Documentation URLs:");
+//                 Object.entries(statusData.documentation_urls).forEach(
+//                   ([file_path, urls]) => {
+//                     console.log(`File: ${file_path}`);
+//                     console.log(`Markdown URL: ${urls.markdown_url}`);
+//                     console.log(`DOCX URL: ${urls.docx_url || "N/A"}`);
+//                   }
+//                 );
+//               }
+//               return {
+//                 status: statusData.status,
+//                 documentation_urls: statusData.documentation_urls,
+//               };
+//             }
+
+//             if (statusData.status === "failed") {
+//               console.error("Job failed!");
+//               return rejectWithValue("Job processing failed.");
+//             }
+//           } catch (error) {
+//             console.error("Error during polling:", error);
+//             return rejectWithValue("Error during polling.");
+//           }
+
+//           await new Promise((resolve) => setTimeout(resolve, pollInterval));
+//         }
+
+//         console.log(
+//           `Giving up after ${maxPolls} polls. Job is still processing.`
+//         );
+//         return rejectWithValue(
+//           "Job is still processing after maximum polling."
+//         );
+//       };
+
+//       // Await the completion of polling to ensure data is returned properly
+//       return await pollJobStatus();
+//     } catch (error) {
+//       console.error(
+//         "Error occurred during documentation generation:",
+//         error.message
+//       );
+//       return rejectWithValue(error.message);
+//     }
+//   }
+// );
+
 export const generateDocumentation = createAsyncThunk(
   "github/generateDocumentation",
   async (requestData, { rejectWithValue }) => {
@@ -133,7 +236,6 @@ export const generateDocumentation = createAsyncThunk(
         `${BASE_URL}/github/generate-documentation`,
         requestData
       );
-
       console.log("Response from Documentation Generation:", response);
       console.log("Response Status:", response.status);
       console.log("Response Data:", response.data);
@@ -143,79 +245,11 @@ export const generateDocumentation = createAsyncThunk(
         return rejectWithValue("Request failed!");
       }
 
-      const job_id = response.data.job_id;
-      console.log("Job ID:", job_id);
+      const jobId = response.data.job_id;
+      console.log("Job ID:", jobId);
 
-      console.log("2. Polling job status...");
-
-      let pollCount = 0;
-      const maxPolls = 30;
-      const pollInterval = 15000; // 15 seconds
-
-      const pollJobStatus = async () => {
-        while (pollCount < maxPolls) {
-          pollCount++;
-          console.log(`Poll #${pollCount}...`);
-
-          try {
-            const statusResponse = await axios.get(
-              `${BASE_URL}/github/job-status/${job_id}`
-            );
-
-            console.log("Status Code:", statusResponse.status);
-
-            if (statusResponse.status !== 200) {
-              console.error(
-                "Failed to get job status:",
-                statusResponse.statusText
-              );
-              return rejectWithValue("Failed to fetch job status!");
-            }
-
-            const statusData = statusResponse.data;
-            console.log("Job Status:", statusData.status);
-            console.log("Response:", JSON.stringify(statusData, null, 2));
-
-            if (statusData.status === "completed") {
-              console.log("Job processing finished!");
-              if (statusData.documentation_urls) {
-                console.log("3. Documentation URLs:");
-                Object.entries(statusData.documentation_urls).forEach(
-                  ([file_path, urls]) => {
-                    console.log(`File: ${file_path}`);
-                    console.log(`Markdown URL: ${urls.markdown_url}`);
-                    console.log(`DOCX URL: ${urls.docx_url || "N/A"}`);
-                  }
-                );
-              }
-              return {
-                status: statusData.status,
-                documentation_urls: statusData.documentation_urls,
-              };
-            }
-
-            if (statusData.status === "failed") {
-              console.error("Job failed!");
-              return rejectWithValue("Job processing failed.");
-            }
-          } catch (error) {
-            console.error("Error during polling:", error);
-            return rejectWithValue("Error during polling.");
-          }
-
-          await new Promise((resolve) => setTimeout(resolve, pollInterval));
-        }
-
-        console.log(
-          `Giving up after ${maxPolls} polls. Job is still processing.`
-        );
-        return rejectWithValue(
-          "Job is still processing after maximum polling."
-        );
-      };
-
-      // Await the completion of polling to ensure data is returned properly
-      return await pollJobStatus();
+      // Use the reusable polling function
+      return await pollJobStatus(jobId, BASE_URL, rejectWithValue);
     } catch (error) {
       console.error(
         "Error occurred during documentation generation:",
