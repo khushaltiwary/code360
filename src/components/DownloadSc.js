@@ -26,6 +26,10 @@ const DownloadSc = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState(null);
 
+  const [loading, setLoading] = useState(true); // New state for loading
+  const [randomFacts, setRandomFacts] = useState([]); // State for random facts
+  const [currentFact, setCurrentFact] = useState(""); // Current displayed fact
+
   //Selected to access Redux state
   const documentationStatus = useSelector(selectDocumentationStatus);
   const documentationUrls = useSelector(selectDocumentationUrls);
@@ -37,16 +41,45 @@ const DownloadSc = () => {
   const [fileUrls, setFileUrls] = useState({});
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
 
+
+   // Sample random facts
+   const facts = [
+    "🚀 Generate documents in a snap – speed up your workflows with just a click!",
+    "🔍 Code reviews made easy – catch bugs before they become problems!",
+    "📊 Gain insights at a glance with real-time reporting features!",
+    "📝 Create stunning architecture diagrams effortlessly – visualize your ideas!",
+    "✨ Seamlessly transform designs into code – unleash your creativity!",
+    "🔄 Optimize workflows and enhance team collaboration – work smarter together!",
+    "♻️ Automated reporting keeps everyone in the loop – never miss a beat!",
+    "💡 Enhance code quality with AI-powered suggestions – code like a pro!",
+    "🌱 Future-proof your projects with scalable features that grow with you!",
+    "🎉 Unlock endless possibilities – new features rolling out soon for a smarter experience!"
+];
+
   const statusResponse = useSelector(
     (state) => state.githubRepo.statusResponse
   );
 
   useEffect(() => {
+    setRandomFacts(facts);
+    // Set the first random fact when the component mounts
+    setCurrentFact(facts[Math.floor(Math.random() * facts.length)]);
+
+    // Change the fact every 3 seconds while loading
+    const factInterval = setInterval(() => {
+      setCurrentFact(facts[Math.floor(Math.random() * facts.length)]);
+    }, 3000); // Change fact every 3 seconds
+
     // Check when status is completed, set file URLs and other necessary actions
-    if (documentationStatus === "completed" && Object.keys(documentationUrls).length > 0) {
-      setProgress(100);
+    if (documentationStatus === "completed") {
+      setLoading(false);
     }
-  }, [documentationStatus, documentationUrls]);
+
+    return () => {
+      clearInterval(factInterval); // Clean up on unmount
+    };
+
+  }, [documentationStatus]);
 
 
   //useEffect(() => {
@@ -153,152 +186,137 @@ const DownloadSc = () => {
 
   return (
     <Container
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      minHeight: "77vh",
+    }}
+  >
+    <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        minHeight: "77vh",
+        padding: "3rem",
+        margin: "5rem ",
+        border: "1px solid #e0e0e0",
+        borderRadius: "8px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <Box
-        sx={{
-          padding: "3rem",
-          margin: "5rem ",
-          border: "1px solid #e0e0e0",
-          borderRadius: "8px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        }}
+      <Typography
+        variant="h4"
+        align="center"
+        gutterBottom
+        sx={{ fontWeight: "bold", color: "#333" }}
       >
-        <Typography
-          variant="h4"
-          align="center"
-          gutterBottom
-          sx={{ fontWeight: "bold", color: "#333" }}
-        >
-          {title}
-        </Typography>
-        <Typography
-          variant="body1"
-          align="center"
-          paragraph
-          sx={{ color: "#666" }}
-        >
-          {description}
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            marginTop: "1rem",
-            justifyContent: "center",
-          }}
-        >
-          <Box sx={{ width: "80%", mr: 2 }}>
-            <LinearProgress variant="determinate" value={progress} />
-          </Box>
-          <Typography variant="body2" color="text.secondary">{`${Math.round(
-            progress
-          )}%`}</Typography>
+        {title}
+      </Typography>
+      <Typography
+        variant="body1"
+        align="center"
+        paragraph
+        sx={{ color: "#666" }}
+      >
+        {description}
+      </Typography>
+
+      {loading ? (
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <CircularProgress />
+          <Typography variant="body2" sx={{ marginTop: "1rem" }}>
+            Analysing the documents, please wait...
+          </Typography>
+          <Typography variant="body2" sx={{ marginTop: "1rem" }}>
+            Our Product : {currentFact}
+          </Typography>
         </Box>
-        <Box
-          sx={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}
-        >
-          {progress === 100 && (
-            <Box
-              sx={{
-                display: "flex",
-                //alignItems: "center",
-                marginTop: "1rem",
-                justifyContent: "center",
-              }}
-            >
-              <Button
-                variant="contained"
-                onClick={handleDownloadClick}
-                sx={{
-                  margin: "0 1rem",
-                  backgroundColor: "#46beaa",
-                  color: "#FFF",
-                  "&:hover": { backgroundColor: "#3fa695" },
-                }}
-              >
-                Download {title}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handlePreviewClick}
-                sx={{
-                  margin: "0 1rem",
-                  backgroundColor: "#46beaa",
-                  color: "#FFF",
-                  "&:hover": { backgroundColor: "#3fa695" },
-                }}
-              >
-                Preview
-              </Button>
-            </Box>
+      ) : (
+        <Box sx={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}>
+          <Button
+            variant="contained"
+            onClick={handleDownloadClick}
+            sx={{
+              margin: "0 1rem",
+              backgroundColor: "#46beaa",
+              color: "#FFF",
+              "&:hover": { backgroundColor: "#3fa695" },
+            }}
+          >
+            Download {title}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handlePreviewClick}
+            sx={{
+              margin: "0 1rem",
+              backgroundColor: "#46beaa",
+              color: "#FFF",
+              "&:hover": { backgroundColor: "#3fa695" },
+            }}
+          >
+            Preview
+          </Button>
+        </Box>
+      )}
+
+      <Dialog
+        open={downloadDialogOpen}
+        onClose={() => setDownloadDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Files Available for Download</DialogTitle>
+        <DialogContent dividers>
+          {documentationUrls &&
+            Object.entries(documentationUrls).map(([fileName, urls]) => (
+              <Box key={fileName} sx={{ marginBottom: "1rem" }}>
+                <Typography variant="h6">{fileName}</Typography>
+                <Button
+                  onClick={() => handleFileClick(urls.markdown_url)}
+                  sx={{ marginRight: "1rem" }}
+                >
+                  Markdown URL
+                </Button>
+                <Button onClick={() => handleFileClick(urls.docx_url)}>
+                  DOCX URL
+                </Button>
+              </Box>
+            ))}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog for Preview */}
+      <Dialog
+        open={previewOpen}
+        onClose={handleClosePreview}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Preview</DialogTitle>
+        <DialogContent dividers>
+          {previewData ? (
+            <Typography variant="body1">
+              {JSON.stringify(previewData, null, 2)}
+            </Typography>
+          ) : (
+            <CircularProgress />
           )}
+        </DialogContent>
+        <Box sx={{ padding: "1rem", textAlign: "center" }}>
+          <Button
+            variant="contained"
+            onClick={handleDownloadClick}
+            sx={{
+              backgroundColor: "#46beaa",
+              color: "#FFF",
+              "&:hover": { backgroundColor: "#3fa695" },
+            }}
+          >
+            Download
+          </Button>
         </Box>
-
-        <Dialog
-          open={downloadDialogOpen}
-          onClose={() => setDownloadDialogOpen(false)}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogTitle>Files Available for Download</DialogTitle>
-          <DialogContent dividers>
-            {documentationUrls &&
-              Object.entries(documentationUrls).map(([fileName, urls]) => (
-                <Box key={fileName} sx={{ marginBottom: "1rem" }}>
-                  <Typography variant="h6">{fileName}</Typography>
-                  <Button
-                    onClick={() => handleFileClick(urls.markdown_url)}
-                    sx={{ marginRight: "1rem" }}
-                  >
-                    Markdown URL
-                  </Button>
-                  <Button onClick={() => handleFileClick(urls.docx_url)}>
-                    DOCX URL
-                  </Button>
-                </Box>
-              ))}
-          </DialogContent>
-        </Dialog>
-
-        {/* Dialog for Preview */}
-        <Dialog
-          open={previewOpen}
-          onClose={handleClosePreview}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogTitle>Preview</DialogTitle>
-          <DialogContent dividers>
-            {previewData ? (
-              <Typography variant="body1">
-                {JSON.stringify(previewData, null, 2)}
-              </Typography>
-            ) : (
-              <CircularProgress />
-            )}
-          </DialogContent>
-          <Box sx={{ padding: "1rem", textAlign: "center" }}>
-            <Button
-              variant="contained"
-              onClick={handleDownloadClick}
-              sx={{
-                backgroundColor: "#46beaa",
-                color: "#FFF",
-                "&:hover": { backgroundColor: "#3fa695" },
-              }}
-            >
-              Download
-            </Button>
-          </Box>
-        </Dialog>
-      </Box>
-    </Container>
+      </Dialog>
+    </Box>
+  </Container>
   );
 };
 
