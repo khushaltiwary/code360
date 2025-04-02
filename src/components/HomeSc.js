@@ -46,6 +46,10 @@ const HomeSc = () => {
   const [ShowItems, setShowItems] = useState(false); // State for Showing Items after Progress bar visibility
   const [isTextFieldDisabled, setIsTextFieldDisabled] = useState(false); // State to disalbe Input Text field
 
+  const [isMainFeaturesDisabled, setIsMainFeaturesDisabled] = useState(true); // Initially disabled
+
+  const [canScroll, setCanScroll] = useState(false); // Control scrolling
+
   const [repository_url, setrepository_url] = useState("");
 
   const handleLinkChange = (event) => {
@@ -59,77 +63,53 @@ const HomeSc = () => {
 
   //Hardcoded Random Facts to show along with Progress Bar.
   const randomFacts = [
-    "Solution utilizes GitLab CI/CD as a DevOps platform to streamline software development processes.",
-    "The integration involves the GEN AI 'GEMINI FLASH' model for automated test generation.",
-    "The goal is to enhance efficiency and code quality by automating test case creation.",
-    "Automated generation includes unit tests, code reviews, and code enhancements.",
-    "Developers initiate the process by committing code to the repository.",
-    "Upon code commit, the CI/CD pipeline is triggered, invoking Vertex AI.",
-    "The GEN AI model automatically generates unit tests and code snippets.",
-    "Vertex AI reviews the code, providing comments and suggestions for improvements.",
-    "The integration ensures relevant documentation is generated for the new code.",
-    "Efficiency is improved by significantly reducing time required for test generation and code reviews.",
-    "The quality of code improves through automated, consistent, and thorough test cases and reviews.",
-    "Coding standards are maintained, reducing technical debt and improving maintainability.",
-    "The process can easily scale with an expanding codebase and development team.",
-    "Automation supports consistent quality and efficiency across development activities.",
+    "🚀 Generate documents in a snap – speed up your workflows with just a click!",
+    "🔍 Code reviews made easy – catch bugs before they become problems!",
+    "📊 Gain insights at a glance with real-time reporting features!",
+    "📝 Create stunning architecture diagrams effortlessly – visualize your ideas!",
+    "✨ Seamlessly transform designs into code – unleash your creativity!",
+    "🔄 Optimize workflows and enhance team collaboration – work smarter together!",
+    "♻️ Automated reporting keeps everyone in the loop – never miss a beat!",
+    "💡 Enhance code quality with AI-powered suggestions – code like a pro!",
+    "🌱 Future-proof your projects with scalable features that grow with you!",
+    "🎉 Unlock endless possibilities – new features rolling out soon for a smarter experience!"
   ];
 
   //Copy Button Logic and Workflow after Button is Clicked
 
   const handleCopyClick = () => {
-    if (!isValidGitHubLink) return; // Prevent copying if the link is invalid
-    navigator.clipboard
-      .writeText(gitRepoLink) // Copy the URL to clipboard
+    if (!isValidGitHubLink) return;
+    navigator.clipboard.writeText(gitRepoLink)
       .then(() => {
-        setrepository_url(gitRepoLink);
+        setCanScroll(true); // Allow scrolling after copying
 
-        //dispatch(checkRepoPrivacy(gitRepoLink)); // Dispatch the checkRepoPrivacy
+        // Show the progress bar
+        setProgress(0); // Reset progress to 0
 
-        // Text field is enabled initially
-        setIsTextFieldDisabled(false);
+        // Display a random fact
+        const factInterval = setInterval(() => {
+          const randomIndex = Math.floor(Math.random() * randomFacts.length);
+          setRandomFact(randomFacts[randomIndex]);
+        }, 1000); // Change fact every second
 
-        // States For Progress bar
-        setHideItems(true);
-
-        setProgress(0);
-
-        // Do not show Items(any thing that should be displayed after complition of Progress bar) initialy.
-        setShowItems(false);
-
-        //Progress Bar Logic -
+        // Progress Bar Logic
         const progressInterval = setInterval(() => {
           setProgress((oldProgress) => {
             if (oldProgress >= 100) {
-              clearInterval(progressInterval); // Stop the timer when progress is 100
-              setHideItems(false); // Hide the progress bar after complection
-              setShowItems(true); //Show Items when progress is completed
-              setIsTextFieldDisabled(true); // Disable the text field
+              clearInterval(progressInterval);
+              clearInterval(factInterval); // Stop changing facts
               alert("Link copied successfully to Google Storage bucket!");
+              setIsMainFeaturesDisabled(false); // Enable main features after alert
+              // Auto scroll to the main features section after the alert
+              setTimeout(() => {
+                document.getElementById('main-features').scrollIntoView({ behavior: 'smooth' });
+              }, 0);
               return 100;
             }
-
-            //console.log("Progress updated to:", oldProgress);
-
-            return oldProgress + 1; // Increment for a longer duration
+            return oldProgress + 1; // Increment progress
           });
-        }, 100);
-
-        // Facts Showing Logic -
-
-        const factInterval = setInterval(() => {
-          // Separate interval for random facts
-          const randomFactIndex = Math.floor(
-            Math.random() * randomFacts.length
-          );
-          setRandomFact(randomFacts[randomFactIndex]);
-        }, 2000); // Display a new random fact every 3 seconds
-
-        setTimeout(() => {
-          clearInterval(factInterval); // Stop updating facts when progress is finished
-        }, 25000);
+        }, 100); // Update progress every 100ms
       })
-
       .catch((err) => {
         console.error("Failed to copy: ", err);
       });
@@ -140,23 +120,18 @@ const HomeSc = () => {
   const features = [
     {
       title: "Test Cases",
-      description: "Description of Test Cases",
-      apiEndpoint:""
+      description: "🧪 Auto-generate robust test cases to ensure bug-free code.",
+      apiEndpoint: "github/generateUnitTest",
     },
     {
       title: "Code Review",
-      description: "Description Code Review",
-      apiEndpoint:"github/generateCodeReview"
+      description: "🔍 AI-powered reviews to catch bugs and optimize your code.",
+      apiEndpoint: "github/generateCodeReview",
     },
     {
-      title: "Code Enhancements",
-      description: "Description of Code Enhancements",
-      apiEndpoint:""
-    },
-    {
-      title: "Code Documentation",
-      description: "Description of Code Documentation",
-      apiEndpoint:"github/generateDocumentation"
+      title: "Documentation & Enhancements",
+      description: "📚 Generate clean docs and enhance code effortlessly.",
+      apiEndpoint: "github/generateDocumentation",
     },
   ];
 
@@ -172,8 +147,9 @@ const HomeSc = () => {
           })
         );
         break;
+
       case "Code Review":
-        console.log("Button is clicked");
+        console.log("Button is clicked Code Review");
         dispatch(
           generateCodeReview({
             repository_url: gitRepoLink,
@@ -181,6 +157,33 @@ const HomeSc = () => {
             repo_token: token,
           })
         );
+        break;
+
+      case "Test Cases":
+        console.log("Button is clicked Test Cases");
+        dispatch(
+          generateUnitTest({
+            repository_url: gitRepoLink,
+            branch,
+            repo_token: token,
+          })
+        );
+        break;
+
+      case "Code Enhancements":
+        console.log("Button is clicked Code Enhancements");
+        dispatch(
+          generateCodeEnhancement({
+            repository_url: gitRepoLink,
+            branch,
+            repo_token: token,
+          })
+        );
+        break;
+
+      default:
+        console.error(`No action defined for feature: ${feature.title}`);
+        // Optionally, show a message to the user or log additional info
         break;
     }
 
@@ -202,267 +205,204 @@ const HomeSc = () => {
         minHeight: "77vh",
       }}
     >
-      {/* Main Content */}
       <Container
         sx={{
           flex: 1,
           display: "flex",
           flexDirection: "column",
-          overflowY: "auto",
+          overflowY: canScroll ? "auto" : "hidden", // Control overflow
         }}
       >
-        {!ShowItems && (
+        <Box
+          sx={{
+            display: "flex",
+            flex: "1 0 auto",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "2rem 1rem",
+          }}
+        >
+          <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
+            360° Code Analytics
+          </Typography>
+          <Typography paragraph>
+            Your one-step solution for all your recurring business needs.
+          </Typography>
+
+          <TextField
+            error={!isValidGitHubLink && gitRepoLink.trim() !== ""}
+            helperText={
+              !isValidGitHubLink && gitRepoLink.trim() !== ""
+                ? "Please enter a valid GitHub repository link."
+                : ""
+            }
+            variant="outlined"
+            fullWidth
+            placeholder="Paste Your Repo Link Here - Gitlab/ Github link"
+            value={gitRepoLink}
+            onChange={handleLinkChange}
+            disabled={false} // Keep enabled for editing
+            sx={{
+              "& .MuiInputBase-input": {
+                textAlign: "center",
+              },
+              marginTop: "1rem",
+              marginBottom: "1rem",
+              width: "40%",
+            }}
+          />
+
+          <TextField
+            placeholder="GitHub Access Token"
+            variant="outlined"
+            fullWidth
+            type="password"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+            sx={{
+              "& .MuiInputBase-input": { textAlign: "center" },
+              marginBottom: "1rem",
+              width: "40%",
+            }}
+          />
+
+
+
+          <Button
+            variant="contained"
+            onClick={handleCopyClick}
+            sx={{
+              marginTop: "1rem",
+              backgroundColor: "#46beaa",
+              color: "#FFF",
+              "&:hover": { backgroundColor: "#3fa695" },
+            }}
+            disabled={false} // Keep enabled for the initial click
+          >
+            Copy Code to Google Storage Bucket
+          </Button>
+        </Box>
+
+        {/* Show the progress bar and facts conditionally */}
+        {progress > 0 && progress < 100 && (
           <Box
             sx={{
               display: "flex",
-              flex: "1 0 auto",
-              justifyContent: "center",
               flexDirection: "column",
               alignItems: "center",
-              padding: "2rem 1rem",
+              justifyContent: "center",
+              width: "70%", // Set width to 70%
+              margin: "2rem auto", // Center horizontally
             }}
           >
-            <Typography
-              variant="h4"
-              align="center"
-              gutterBottom
-              sx={{ fontWeight: "bold" }}
-            >
-              360° Code Analytics
-            </Typography>
-            <Typography paragraph align="center">
-              Your one step solution to all your boring business needs.
-            </Typography>
-
-            {/* Git Repository Link Input */}
-
-            <TextField
-              error={!isValidGitHubLink && gitRepoLink.trim() !== ""} // Error state if the link is invalid
-              helperText={
-                !isValidGitHubLink && gitRepoLink.trim() !== ""
-                  ? "Please enter a valid GitHub repository link."
-                  : ""
-              }
-              variant="outlined"
-              fullWidth
-              placeholder="Paste Your Repo Link Here - Gitlab/ Github link"
-              value={gitRepoLink}
-              onChange={handleLinkChange}
-              disabled={isTextFieldDisabled} // Disable if true
+            <LinearProgress
+              variant="determinate"
+              value={progress}
               sx={{
-                "& .MuiInputBase-input": {
-                  textAlign: "center",
-                },
-                marginTop: "1rem",
+                width: "100%", // Full width of the container
                 marginBottom: "1rem",
-                width: "40%",
               }}
             />
-            {/* Personal Access Token Input 
-            {isRepoPrivate && (*/}
-              <TextField
-                placeholder="GitHub Access Token"
-                variant="outlined"
-                fullWidth
-                type="password"
-                value={token}
-                onChange={(e) => setToken(e.target.value)}
-                sx={{
-                  "& .MuiInputBase-input": { textAlign: "center" },
-                  marginBottom: "1rem",
-                  width: "40%",
-                }}
-              />
-            
-
-            <Button
-              variant="contained"
-              onClick={handleCopyClick}
+            <Typography
+              variant="h6"
               sx={{
-                marginTop: "1rem",
-                backgroundColor: "#46beaa",
-                color: "#FFF",
-                "&:hover": { backgroundColor: "#3fa695" },
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "#46beaa", // Eye-catching color
               }}
-              disabled={isTextFieldDisabled} // disable button
             >
-              Copy Code to Google Storage Bucket
-            </Button>
-
-            {HideItems && (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  marginTop: "1rem",
-                  width: "100%",
-                }}
-              >
-                <Box
-                  sx={{ display: "flex", alignItems: "center", width: "100%" }}
-                >
-                  <LinearProgress
-                    variant="determinate"
-                    value={progress}
-                    sx={{ flexGrow: 1 }}
-                  />
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      marginLeft: "10px",
-                      color: "black",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {`${Math.round(progress)}%`}{" "}
-                    {/* current progress percentage */}
-                  </Typography>
-                </Box>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    marginTop: "0.5rem",
-                    textAlign: "center",
-                    width: "100%",
-                  }}
-                >
-                  {randomFact} {/* random fact below the progress bar */}
-                </Typography>
-              </Box>
-            )}
+              {randomFact}
+            </Typography>
           </Box>
         )}
 
-        {/* Conditional Rendering for Main Feature Section */}
-        {ShowItems && (
+        {/* Second part of home screen - feature list */}
+        <Box
+          id="main-features"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            paddingBottom: "1rem",
+            pointerEvents: isMainFeaturesDisabled ? "none" : "auto", // Disable interactions
+            opacity: isMainFeaturesDisabled ? 0.5 : 1, // Dim the section when disabled
+          }}
+        >
+          <Typography variant="h4" align="center" gutterBottom>
+            Main Features
+          </Typography>
+
           <Box
             sx={{
               display: "flex",
-              flex: "1 0 auto",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              overflowY: "auto",
-              paddingBottom: "1rem",
+              justifyContent: "center", // Center the cards horizontally
+              alignItems: "stretch", // Ensure all cards have the same height
+              flexWrap: "nowrap", // Prevent wrapping to a new row
+              gap: "1.5rem", // Add spacing between cards
+              width: "100%", // Full width of the container
+              maxWidth: "1200px", // Limit the maximum width for better alignment
+              margin: "0 auto", // Center the row horizontally
             }}
           >
-            <Typography variant="h4" align="center" gutterBottom>
-              Main Features
-            </Typography>
-
-            {/* "Download All Reports" card, separate from the grid */}
-            <Box sx={{ display: "flex", justifyContent: "center", marginY: 3 }}>
+            {features.map((feature, index) => (
               <Card
+                key={index}
                 sx={{
+                  flex: "1 1 30%", // Ensure all cards take equal width
                   borderRadius: "12px",
-                  padding: "10px",
+                  padding: "20px",
                   textAlign: "left",
                   background: "linear-gradient(white, #f0f8ff)",
                   transition: "0.3s",
-
+                  display: "flex",
+                  flexDirection: "column", // Ensure content stacks vertically
+                  justifyContent: "space-between", // Space out content evenly
+                  minHeight: "250px", // Set a minimum height for all cards
                   "&:hover": {
-                    boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
-                    transform: "scale(1.02)",
+                    boxShadow: isMainFeaturesDisabled
+                      ? "none"
+                      : "0 8px 20px rgba(0, 0, 0, 0.2)",
+                    transform: isMainFeaturesDisabled ? "none" : "scale(1.02)",
                   },
                 }}
               >
-                <CardContent
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                <CardContent>
                   <Typography
                     variant="h5"
                     component="div"
                     sx={{ marginBottom: "1rem" }}
                   >
-                    All Reports
+                    {feature.title}
                   </Typography>
                   <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{ marginBottom: "1rem" }}
+                    sx={{
+                      flexGrow: 1, // Ensure the description takes up available space
+                    }}
                   >
-                    A compiled report of all features.
+                    {feature.description}
                   </Typography>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{
-                      backgroundColor: "#46beaa",
-                      color: "#FFF",
-                      "&:hover": { backgroundColor: "#3fa695" },
-                    }}
-                    onClick={() =>
-                      handleFeatureClick({
-                        title: "All Reports",
-                        description: "All 360 Analytics Reports ",
-                      })
-                    }
-                  >
-                    All Reports
-                  </Button>
                 </CardContent>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    backgroundColor: "#46beaa",
+                    color: "#FFF",
+                    "&:hover": { backgroundColor: "#3fa695" },
+                    marginTop: "1rem",
+                  }}
+                  onClick={() => handleFeatureClick(feature)}
+                  disabled={isMainFeaturesDisabled} // Disable buttons when features are disabled
+                >
+                  Explore
+                </Button>
               </Card>
-            </Box>
-
-            <Grid2 container spacing={3}>
-              {features.map((feature, index) => (
-                <Grid2 item xs={12} sm={6} md={3} key={index}>
-                  <Card
-                    sx={{
-                      borderRadius: "12px",
-                      padding: "10px",
-                      textAlign: "left",
-                      background: "linear-gradient(white, #f0f8ff)",
-                      transition: "0.3s",
-
-                      "&:hover": {
-                        boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
-                        transform: "scale(1.02)",
-                      },
-                    }}
-                  >
-                    <CardContent sx={{ padding: "20px" }}>
-                      <Typography
-                        variant="h5"
-                        component="div"
-                        sx={{ marginBottom: "1rem" }}
-                      >
-                        {feature.title}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ marginBottom: "1rem" }}
-                      >
-                        {feature.description}
-                      </Typography>
-                      <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          sx={{
-                            backgroundColor: "#46beaa",
-                            color: "#FFF",
-                            "&:hover": { backgroundColor: "#3fa695" },
-                          }}
-                          onClick={() => handleFeatureClick(feature)}
-                        >
-                          {feature.title}
-                        </Button>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Grid2>
-              ))}
-            </Grid2>
+            ))}
           </Box>
-        )}
+        </Box>
       </Container>
     </Box>
   );
