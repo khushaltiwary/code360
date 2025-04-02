@@ -133,6 +133,11 @@ const HomeSc = () => {
       description: "📚 Generate clean docs and enhance code effortlessly.",
       apiEndpoint: "github/generateDocumentation",
     },
+    {
+      title: "All Reviews",
+      description: "🤖 Generate all types of reviews for your code.",
+      apiEndpoint: "github/automateWorkflow",
+    },
   ];
 
   const handleFeatureClick = (feature) => {
@@ -318,6 +323,7 @@ const HomeSc = () => {
         )}
 
         {/* Second part of home screen - feature list */}
+        {/* Second part of home screen - feature list */}
         <Box
           id="main-features"
           sx={{
@@ -333,19 +339,19 @@ const HomeSc = () => {
             Main Features
           </Typography>
 
+          {/* First row with three features */}
           <Box
             sx={{
               display: "flex",
               justifyContent: "center", // Center the cards horizontally
               alignItems: "stretch", // Ensure all cards have the same height
-              flexWrap: "nowrap", // Prevent wrapping to a new row
               gap: "1.5rem", // Add spacing between cards
               width: "100%", // Full width of the container
               maxWidth: "1200px", // Limit the maximum width for better alignment
-              margin: "0 auto", // Center the row horizontally
+              marginBottom: "1.5rem", // Add spacing below the first row
             }}
           >
-            {features.map((feature, index) => (
+            {features.slice(0, 3).map((feature, index) => (
               <Card
                 key={index}
                 sx={{
@@ -359,6 +365,74 @@ const HomeSc = () => {
                   flexDirection: "column", // Ensure content stacks vertically
                   justifyContent: "space-between", // Space out content evenly
                   minHeight: "250px", // Set a minimum height for all cards
+                  "&:hover": {
+                    boxShadow: isMainFeaturesDisabled
+                      ? "none"
+                      : "0 8px 20px rgba(0, 0, 0, 0.2)",
+                    transform: isMainFeaturesDisabled ? "none" : "scale(1.02)",
+                  },
+                }}
+              >
+                <CardContent>
+                  <Typography
+                    variant="h5"
+                    component="div"
+                    sx={{ marginBottom: "1rem" }}
+                  >
+                    {feature.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      flexGrow: 1, // Ensure the description takes up available space
+                    }}
+                  >
+                    {feature.description}
+                  </Typography>
+                </CardContent>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    backgroundColor: "#46beaa",
+                    color: "#FFF",
+                    "&:hover": { backgroundColor: "#3fa695" },
+                    marginTop: "1rem",
+                  }}
+                  onClick={() => handleFeatureClick(feature)}
+                  disabled={isMainFeaturesDisabled} // Disable buttons when features are disabled
+                >
+                  Explore
+                </Button>
+              </Card>
+            ))}
+          </Box>
+
+          {/* Second row with one centered feature */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center", // Center the single card horizontally
+              alignItems: "center", // Center the card vertically
+              width: "100%", // Full width of the container
+            }}
+          >
+            {features.slice(3, 4).map((feature, index) => (
+              <Card
+                key={index}
+                sx={{
+                  flex: "0 0 30%", // Ensure the card takes 30% width (same as the first row cards)
+                  borderRadius: "12px",
+                  padding: "20px",
+                  textAlign: "left",
+                  background: "linear-gradient(white, #f0f8ff)",
+                  transition: "0.3s",
+                  display: "flex",
+                  flexDirection: "column", // Ensure content stacks vertically
+                  justifyContent: "space-between", // Space out content evenly
+                  minHeight: "250px", // Set a minimum height for the card
+                  margin: "0 auto", // Center the card horizontally
                   "&:hover": {
                     boxShadow: isMainFeaturesDisabled
                       ? "none"
