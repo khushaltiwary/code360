@@ -9,8 +9,8 @@ const WhiteboardSc = ({children}) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     const drawerItems = [
-        { text: "Home 🏠 ", path: "/home" }, // Assuming UpcomingFeatures is imported
-        { text: "Upcoming Features ✨ ", path: "/upcomingFeatures" }, // Assuming UpcomingFeatures is imported
+        { text: "🏠 Home", path: "/home" }, // Assuming UpcomingFeatures is imported
+        { text: "✨ Upcoming Features", path: "/upcomingFeatures" }, // Assuming UpcomingFeatures is imported
         // More items can be added here
     ];
 
